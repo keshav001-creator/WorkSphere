@@ -1,0 +1,11 @@
+const express=require("express")
+const validator=require("../middlewares/validator.middleware")
+const controller=require("../controllers/user.controller")
+const router=express.Router()
+
+
+router.post("/register",validator.registerUserValidator,controller.registerUser)
+router.post("/login",validator.loginUserValidator,controller.loginUser)
+
+
+module.exports=router

@@ -1,0 +1,20 @@
+const mongoose=require("mongoose")
+
+
+const workspaceSchema=new mongoose.Schema({
+
+    name:{
+        type:String,
+        required:true
+    },
+    ownerId:{
+        type:mongoose.Schema.Types.ObjectId,
+        required:true
+    }
+},{timestamps:true})
+
+
+const workspaceModel=mongoose.model("workspace",workspaceSchema)
+
+
+module.exports=workspaceModel

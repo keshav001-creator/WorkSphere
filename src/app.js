@@ -1,0 +1,19 @@
+const cookieParser = require("cookie-parser")
+const express=require("express")
+const authRoutes=require("./routes/user.routes")
+const wsRoutes=require("./routes/workspace.routes")
+const InviteRoutes=require("./routes/invite.routes")
+const DocRoutes=require("./routes/document.routes")
+
+const app=express()
+
+app.use(express.json())
+app.use(cookieParser())
+
+app.use("/api",authRoutes)
+app.use("/api",wsRoutes)
+app.use("/api",InviteRoutes)
+app.use("/api",DocRoutes)
+
+
+module.exports=app
