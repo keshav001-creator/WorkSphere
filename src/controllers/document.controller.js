@@ -39,7 +39,7 @@ async function docDelete(req, res) {
             _id: docId,
             workspaceId
         })
-
+ 
         if (!doc) {
             return res.status(404).json({ message: "document does not exist" })
         }
@@ -82,7 +82,7 @@ async function updateDoc(req, res) {
 }
 
 
-async function getDocs(req, res) {
+async function fetchDocs(req, res) {
 
     try {
         const { workspaceId } = req.params
@@ -112,4 +112,39 @@ async function getDocs(req, res) {
 
 }
 
-module.exports = { createDoc, docDelete, updateDoc, getDocs }
+async function getDoc(req,res){
+
+    try {
+        const { workspaceId, docId } = req.params
+
+        const workspace = await workspaceModel.findById(workspaceId)
+
+        if (!workspace) {
+            return res.status(400).json({ message: "WorkspaceId is not there" })
+        }
+
+        const document = await docModel.findOne({
+            workspaceId,
+            _id:docId
+        })
+
+        if (!document) {
+            return res.status(404).json("Document not found")
+        }
+
+        return res.status(200).json({
+            message: "Document fetched successfull",
+            document
+        })
+
+    } catch (err) {
+        return res.status(500).json({
+            message: "Error while getting Document",
+            error: err.message
+        })
+    }
+}
+
+
+
+module.exports = { createDoc, docDelete, updateDoc, fetchDocs, getDoc }

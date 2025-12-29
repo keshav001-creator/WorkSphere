@@ -10,18 +10,10 @@ async function sendInvite(req, res) {
         const userId = req.user.id
         const { workspaceId } = req.params
 
-        const member = await wsUserModel.findOne({
-            userId,
-            workspaceId
-        })
-
-        if (!member || !["Owner", "Admin"].includes(member.role)) {
-            return res.status(403).json({ message: "Not allowed" })
-        }
-
+    
         const token = crypto.randomBytes(32).toString("hex")
 
-        const invite = await inviteModel.create({
+       await inviteModel.create({
             workspaceId,
             email,
             role,
