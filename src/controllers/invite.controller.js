@@ -1,6 +1,8 @@
 const wsUserModel = require("../models/wsUser.model")
 const inviteModel = require("../models/invite.model")
 const crypto = require("crypto")
+const Notification = require("../models/notification")
+const userModel = require("../models/user.model")
 
 
 async function sendInvite(req, res) {
@@ -18,9 +20,19 @@ async function sendInvite(req, res) {
             email,
             role,
             token,
-            expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
+            expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)   
         })
 
+        const invitedUser=await userModel.findOne({email})
+
+       if(invitedUser){
+         await Notification.create({
+            userId:invitedUser._id,
+            type:"Invite",
+            message:"You have been invited to join the workspace",
+            token           
+        })
+       }
 
         return res.status(201).json({
             message: "Invite sent",
@@ -55,6 +67,7 @@ async function acceptInvite(req,res){
         })
 
         if(!invite){
+            await Notification.updateMany({ token }, { isRead: true });
             return res.status(400).json({message:"Invalid or expired token"})
         }
 
@@ -87,6 +100,8 @@ async function acceptInvite(req,res){
         invite.used=true
 
         await invite.save()
+
+        await Notification.updateMany({ token }, { isRead: true });
 
         return res.status(201).json({
             message:"Invitation accepted successfully",
