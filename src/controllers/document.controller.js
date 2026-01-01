@@ -1,6 +1,8 @@
 const docModel = require("../models/doc.model")
 const workspaceModel = require("../models/workspace.model")
 const wsUserModel = require("../models/wsUser.model")
+const generateResponse=require("../services/ai.service")
+const redis=require("../db/redis")
 
 async function createDoc(req, res) {
 
@@ -146,5 +148,55 @@ async function getDoc(req,res){
 }
 
 
+async function getSummary(req,res){
+    try{
 
-module.exports = { createDoc, docDelete, updateDoc, fetchDocs, getDoc }
+        const {workspaceId, docId}=req.params
+
+         const workspace = await workspaceModel.findById(workspaceId)
+
+        if (!workspace) {
+            return res.status(400).json({ message: "WorkspaceId is not there" })
+        }
+
+        const document=await docModel.findOne({
+            _id:docId,
+            workspaceId
+        })
+
+        if(!document){
+            return res.status(404).json({message:"Document not found"})
+        }
+
+        const cachedSummary=await redis.get(`Summary:${workspaceId}:${docId}`)
+
+        if(cachedSummary){
+            return res.status(200).json({message:"Summary fetched successfully(cached)",summary:cachedSummary})
+        }
+
+        const prompt=`Summarize the following document clearly and concisely:
+        ${document.content} 
+         `
+
+        const response=await generateResponse(prompt)
+
+        await redis.set(`Summary:${workspaceId}:${docId}`,response,"EX", 24 * 60 * 60)
+
+        return res.status(200).json({
+            message:"Summary fetched successfully",
+            response
+        })
+        
+
+
+    }catch(err){
+        return res.status(500).json({
+            message:"Error while generating summary",
+            error:err.message
+        })
+    }
+}
+
+
+
+module.exports = { createDoc, docDelete, updateDoc, fetchDocs, getDoc, getSummary}

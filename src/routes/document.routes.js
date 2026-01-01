@@ -15,4 +15,6 @@ router.get("/workspaces/:workspaceId/documents/:docId",authUser,rbac(["Owner","A
 
 router.get("/workspaces/:workspaceId/documents",authUser,rbac(["Owner","Admin","Member"]),controller.fetchDocs)
 
+router.get("/workspaces/:workspaceId/documents/:docId/summary",authUser,rbac(["Admin","Owner","Member"]),controller.getSummary)
+
 module.exports=router

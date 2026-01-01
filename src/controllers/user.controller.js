@@ -18,6 +18,9 @@ async function registerUser(req, res) {
             })
         }
 
+        const avatar=`https://api.dicebear.com/7.x/bottts/svg?seed=${email}`
+
+
 
 
         const hashedPass = await bcrypt.hash(password, 10)
@@ -28,7 +31,8 @@ async function registerUser(req, res) {
                 firstName,
                 lastName
             },
-            password: hashedPass
+            password: hashedPass,
+            avatar
 
         })
 
@@ -171,4 +175,4 @@ async function getme(req, res) {
 }
 
 
-module.exports = { registerUser, loginUser, logoutUser, getMe}
+module.exports = { registerUser, loginUser, logoutUser, getme}

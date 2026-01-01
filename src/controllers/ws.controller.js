@@ -96,10 +96,85 @@ async function deleteWorkspace(req, res) {
         })
     }
 
+}
 
 
+async function updateName(req, res) {
+
+    try {
+        const { name } = req.body
+        const { workspaceId } = req.params
+
+        const workspace = await workspaceModel.findById(workspaceId)
+
+        if (!workspace) {
+            return res.status(404).json({ message: "workspace does not exits" })
+        }
+
+        const updatedWorkspace = await workspaceModel.findOneAndUpdate({
+            _id:workspaceId,
+            ownerId: req.user.id
+        }, req.body, { new: true })
+
+
+        if (!updatedWorkspace) {
+            return res.status(404).json({ message: "Workspace not found" })
+        }
+
+        return res.status(200).json({
+            messgae: "Workspace name updated successfully",
+            updatedWorkspace
+        })
+
+    } catch (err) {
+        return res.status(500).json({
+            message: "Error while updating workspace",
+            error: err.message
+        })
+    }
 
 }
 
 
-module.exports = { wcCreate, getMyWorkspaces, deleteWorkspace }
+async function getWs(req,res){
+    
+    try{
+
+        const {workspaceId}=req.params
+
+         const workspace = await workspaceModel.findById(workspaceId)
+
+        if (!workspace) {
+            return res.status(404).json({ message: "workspace does not exits" })
+        }
+
+        return res.status(200).json({
+            message:"Workspace fetched successfully",
+            workspace
+        })
+    }catch(err){
+
+        return res.status(500).json({
+            message:"Error while fetching workspace",
+            error:err.message
+        })
+
+    }
+}
+
+
+async function chat(req,res){
+
+    const {workspaceId}=req.params
+
+    // const 
+
+    const workspace = await workspaceModel.findById(workspaceId)
+
+        if (!workspace) {
+            return res.status(404).json({ message: "workspace does not exits" })
+        }
+    
+}
+
+module.exports = { wcCreate, getMyWorkspaces, deleteWorkspace, updateName, getWs}
