@@ -9,30 +9,38 @@ async function sendInvite(req, res) {
 
     try {
         const { email, role } = req.body
-        const userId = req.user.id
         const { workspaceId } = req.params
 
-    
+
         const token = crypto.randomBytes(32).toString("hex")
 
-       await inviteModel.create({
+        await inviteModel.create({
             workspaceId,
             email,
             role,
             token,
-            expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)   
+            expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
         })
 
-        const invitedUser=await userModel.findOne({email})
+        const invitedUser = await userModel.findOne({ email })
 
-       if(invitedUser){
-         await Notification.create({
-            userId:invitedUser._id,
-            type:"Invite",
-            message:"You have been invited to join the workspace",
-            token           
-        })
-       }
+        if (invitedUser) {
+            await Notification.create({
+                userId: invitedUser._id,
+                type: "Invite",
+                message: "You have been invited to join the workspace",
+                token
+            })
+
+            const io = req.app.get("io")
+            io.to(invitedUser._id.toString()).emit("notification", {
+                type: "Invite",
+                message: "you have been invited to join the workspace",
+                token
+            })
+        }
+
+
 
         return res.status(201).json({
             message: "Invite sent",
@@ -52,71 +60,72 @@ async function sendInvite(req, res) {
 }
 
 
-async function acceptInvite(req,res){
+async function acceptInvite(req, res) {
 
-    try{
+    try {
 
-        const {token}=req.params
-        const userEmail=req.user.email
-        const userId=req.user.id
+        const { token } = req.params
+        const userEmail = req.user.email
+        const userId = req.user.id
 
-        const invite=await inviteModel.findOne({
+        const invite = await inviteModel.findOne({
             token,
-            used:false,
-            expiresAt:{$gt:new Date()}
+            used: false,
+            expiresAt: { $gt: new Date() }
         })
 
-        if(!invite){
+
+        if (!invite) {
             await Notification.updateMany({ token }, { isRead: true });
-            return res.status(400).json({message:"Invalid or expired token"})
+            return res.status(400).json({ message: "Invalid or expired token" })
         }
 
-        if(invite.email !== userEmail){
-            return res.status(403).json({message:"Invitation is not for you"})
+        if (invite.email !== userEmail) {
+            return res.status(403).json({ message: "Invitation is not for you" })
         }
 
 
-        const exists=await wsUserModel.findOne({
-            workspaceId:invite.workspaceId,
+        const exists = await wsUserModel.findOne({
+            workspaceId: invite.workspaceId,
             userId
         })
 
-        if(exists){
-           exists.role=invite.role
-           await exists.save()
+        if (exists) {
+            exists.role = invite.role
+            await exists.save()
 
-           invite.used=true
-           await invite.save()
+            invite.used = true
+            await invite.save()
 
-           return res.status(200).json({message:"Workspace role update successfully"})
+            return res.status(200).json({ message: "Workspace role update successfully" })
         }
 
-        const wsUser=await wsUserModel.create({
+        const wsUser = await wsUserModel.create({
             userId,
-            workspaceId:invite.workspaceId,
-            role:invite.role
+            workspaceId: invite.workspaceId,
+            role: invite.role
         })
 
-        invite.used=true
+        invite.used = true
 
         await invite.save()
 
         await Notification.updateMany({ token }, { isRead: true });
 
         return res.status(201).json({
-            message:"Invitation accepted successfully",
+            message: "Invitation accepted successfully",
             wsUser
         })
 
 
 
-    }catch(err){
+    } catch (err) {
 
         return res.status(500).json({
-            message:"Error while accepting invitation",
-            error:err.message
+            message: "Error while accepting invitation",
+            error: err.message
         })
     }
 }
 
-module.exports={sendInvite,acceptInvite}
+module.exports = { sendInvite, acceptInvite }
