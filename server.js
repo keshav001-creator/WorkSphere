@@ -58,10 +58,32 @@ io.use(async(socket,next)=>{
 
 io.on("connection",(socket)=>{
 
-    const userId=socket.user.id.toString()
+    const userId=socket.user._id.toString()
 
     socket.join(userId)
     console.log("socket connected:",userId)
+
+    socket.on("join-doc",({docId})=>{
+        socket.join(docId)
+        console.log(`user joined document`)
+    })
+
+    socket.on("typing-start",({docId})=>{
+        socket.to(docId).emit("user-typing",{
+            userId,
+            name:socket.user.fullName.firstName
+        })
+    })
+
+
+    socket.on("typing-stop",({docId})=>{
+        socket.to(docId).emit("user-stop-typing",{
+            userId
+        })
+    })
+
+
+
 
     socket.on("disconnect",()=>{
         console.log("Socket disconnected:",userId)
