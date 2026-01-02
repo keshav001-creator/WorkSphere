@@ -3,7 +3,7 @@ const inviteModel = require("../models/invite.model")
 const crypto = require("crypto")
 const Notification = require("../models/notification")
 const userModel = require("../models/user.model")
-
+const logModel=require("../models/activitylog")
 
 async function sendInvite(req, res) {
 
@@ -41,6 +41,14 @@ async function sendInvite(req, res) {
         }
 
 
+        await logModel.create({
+            workspaceId,
+            actor: req.user._id,
+            message: `Invitation is sended to ${email} by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
+        })
+
+
+
 
         return res.status(201).json({
             message: "Invite sent",
@@ -66,7 +74,7 @@ async function acceptInvite(req, res) {
 
         const { token } = req.params
         const userEmail = req.user.email
-        const userId = req.user.id
+        const userId = req.user._id
 
         const invite = await inviteModel.findOne({
             token,
@@ -111,6 +119,13 @@ async function acceptInvite(req, res) {
         await invite.save()
 
         await Notification.updateMany({ token }, { isRead: true });
+
+            await logModel.create({
+            workspaceId,
+            actor: req.user._id,
+            message: `Invitation is accepted by ${email}`
+        })
+
 
         return res.status(201).json({
             message: "Invitation accepted successfully",

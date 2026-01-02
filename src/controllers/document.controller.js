@@ -3,13 +3,14 @@ const workspaceModel = require("../models/workspace.model")
 const wsUserModel = require("../models/wsUser.model")
 const generateResponse=require("../services/ai.service")
 const redis=require("../db/redis")
+const logModel=require("../models/activitylog")
 
 async function createDoc(req, res) {
 
     try {
         const { title, content } = req.body
         const { workspaceId } = req.params
-        const userId = req.user.id
+        const userId = req.user._id
 
         const doc = await docModel.create({
             workspaceId,
@@ -17,6 +18,12 @@ async function createDoc(req, res) {
             content,
             createdBy: userId
         })
+
+        await logModel.create({
+                    workspaceId,
+                    actor:req.user._id,
+                    message:`Document is created by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
+                })
 
         return res.status(201).json({
             message: "document created successfully",
@@ -70,6 +77,12 @@ async function updateDoc(req, res) {
         if (!updatedDoc) {
             return res.status(404).json({ message: "Document does not exist" })
         }
+
+         await logModel.create({
+                    workspaceId,
+                    actor:req.user._id,
+                    message:`Document is updated by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
+                })
 
         return res.status(200).json({
             message: "Document updated successfully",

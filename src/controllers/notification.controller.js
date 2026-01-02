@@ -5,7 +5,7 @@ async function getNotifications(req,res){
 
     try{
 
-        const {userId}=req.user.id
+        const userId=req.user._id
         const Notifications=await notifications.find({
             userId,
             isRead:false

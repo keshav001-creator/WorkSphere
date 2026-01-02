@@ -14,8 +14,8 @@ router.delete("/workspaces/:workspaceId",authUser,rbac(["Owner"]),controller.del
 router.patch("/workspaces/:workspaceId",authUser,rbac(["Admin","Owner"]),controller.updateName)
 router.get("/workspaces/:workspaceId",authUser,controller.getWs)
 
-// AI chat
-// router.post("/workspaces/:workspaceId/chat",authUser,rbac(["Admin","Owner","Member"]),controller.)
+// activity logs
+router.get("/workspace/:workspaceId/activityLog",rbac(["Admin","Owner","Member"]),controller.getActivityLogs)
 
 
 

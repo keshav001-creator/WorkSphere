@@ -18,7 +18,7 @@ async function registerUser(req, res) {
             })
         }
 
-        const avatar=`https://api.dicebear.com/7.x/bottts/svg?seed=${email}`
+        const avatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${email}`
 
 
 
@@ -38,7 +38,8 @@ async function registerUser(req, res) {
 
         const token = jwt.sign({
             id: User._id,
-            email: User.email
+            email: User.email,
+          
         }, process.env.JWT_SECRET_KEY, { expiresIn: "1d" })
 
 
@@ -88,7 +89,8 @@ async function loginUser(req, res) {
 
         const token = jwt.sign({
             id: User._id,
-            email: User.email
+            email: User.email,
+           
         }, process.env.JWT_SECRET_KEY, { expiresIn: "1d" })
 
 
@@ -155,24 +157,23 @@ async function getme(req, res) {
             })
         }
 
-         let decoded;
+        let decoded;
         try {
             decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-        } catch (jwtErr) {
-            // This will catch expired or invalid token
-            return res.status(401).json({ authenticated: false, message: jwtErr.message });
+        } catch (err) {
+            return res.status(401).json({ authenticated: false, message: err.message });
         }
-       
 
-        return res.status(200).json({authenticated:true})
+
+        return res.status(200).json({ authenticated: true })
 
     } catch (err) {
         return res.status(500).json({
-            message:"Error while verifying",
-            error:err.message
+            message: "Error while verifying",
+            error: err.message
         })
     }
 }
 
 
-module.exports = { registerUser, loginUser, logoutUser, getme}
+module.exports = { registerUser, loginUser, logoutUser, getme }

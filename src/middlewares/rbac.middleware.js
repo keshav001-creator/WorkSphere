@@ -6,7 +6,7 @@ function rbac(allowedRoles = []) {
         try {
 
             const { workspaceId } = req.params
-            const userId = req.user.id
+            const userId = req.user._id
 
             if(!workspaceId){
                 return res.status(400).json({message:"Workspace Id is missing"})

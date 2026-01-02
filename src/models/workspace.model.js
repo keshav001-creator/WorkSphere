@@ -9,6 +9,7 @@ const workspaceSchema=new mongoose.Schema({
     },
     ownerId:{
         type:mongoose.Schema.Types.ObjectId,
+        ref:"user",
         required:true
     }
 },{timestamps:true})

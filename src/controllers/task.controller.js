@@ -1,13 +1,14 @@
 const taskModel = require("../models/task.model")
 const workspaceModel = require("../models/workspace.model")
 const wsUserModel = require("../models/wsUser.model")
+const logModel=require("../models/activitylog")
 
 async function taskCreate(req, res) {
 
     try {
         const { title, description, status } = req.body
         const { workspaceId } = req.params
-        const userId = req.user.id
+        const userId = req.user._id
 
 
         const task = await taskModel.create({
@@ -17,6 +18,13 @@ async function taskCreate(req, res) {
             workspaceId,
             createdBy: userId
         })
+
+        await logModel.create({
+            workspaceId,
+            actor: req.user._id,
+            message: `Task created by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
+        })
+
 
         return res.status(201).json({
             message: "Task created successfully",
@@ -50,6 +58,12 @@ async function deleteTask(req, res) {
         if (!task) {
             return res.status(404).json({ message: "Task does not exist" })
         }
+
+        await logModel.create({
+            workspaceId,
+            actor: req.user._id,
+            message: `Task deleted by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
+        })
 
         return res.status(200).json({ message: "Task deleted successfully" })
 
@@ -85,6 +99,12 @@ async function updateTask(req, res) {
             return res.status(404).json({ message: "Task not found" })
         }
 
+        await logModel.create({
+            workspaceId,
+            actor: req.user._id,
+            message: `Task updated by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
+        })
+
         return res.status(200).json({
             message: "Task update successfully",
             updatedTask
@@ -110,10 +130,10 @@ async function getTask(req, res) {
 
         const task = await taskModel.findOne({
             workspaceId,
-            _id:taskId
+            _id: taskId
         })
 
-        if (task.length===0) {
+        if (task.length === 0) {
             return res.status(404).json("Task not found")
         }
 
@@ -132,31 +152,31 @@ async function getTask(req, res) {
 
 
 
-async function fetchTasks(req,res){
+async function fetchTasks(req, res) {
 
-try{
-    const{workspaceId}=req.params
+    try {
+        const { workspaceId } = req.params
 
-    const workspace = await workspaceModel.findById(workspaceId)
+        const workspace = await workspaceModel.findById(workspaceId)
 
         if (!workspace) {
             return res.status(400).json({ message: "WorkspaceId is not there" })
         }
 
-    const tasks=await taskModel.find({
-        workspaceId
-    })
+        const tasks = await taskModel.find({
+            workspaceId
+        })
 
-    if(tasks.length === 0){
-        return res.status(404).json({message:"Tasks not found"})
-    }
+        if (tasks.length === 0) {
+            return res.status(404).json({ message: "Tasks not found" })
+        }
 
-    return res.status(200).json({
-        message:"Tasks fetched successfully",
-        tasks
-    })
+        return res.status(200).json({
+            message: "Tasks fetched successfully",
+            tasks
+        })
 
-    }catch (err) {
+    } catch (err) {
         return res.status(500).json({
             message: "Error while fetching tasks",
             error: err.message

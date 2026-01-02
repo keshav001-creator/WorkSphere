@@ -3,6 +3,7 @@ const docModel = require("../models/doc.model")
 const inviteModel = require("../models/invite.model")
 const workspaceModel = require("../models/workspace.model")
 const wsUserModel = require("../models/wsUser.model")
+const logModel = require("../models/activitylog")
 
 
 
@@ -11,7 +12,7 @@ async function wcCreate(req, res) {
 
     try {
         const { name } = req.body
-        userId = req.user.id
+        userId = req.user._id
 
         const workspace = await workspaceModel.create({
             name,
@@ -42,7 +43,7 @@ async function wcCreate(req, res) {
 async function getMyWorkspaces(req, res) {
 
     try {
-        const userId = req.user.id
+        const userId = req.user._id
 
         const workspaces = await wsUserModel.find({
             userId
@@ -113,7 +114,7 @@ async function updateName(req, res) {
 
         const updatedWorkspace = await workspaceModel.findOneAndUpdate({
             _id:workspaceId,
-            ownerId: req.user.id
+            ownerId: req.user._id
         }, req.body, { new: true })
 
 
@@ -121,8 +122,14 @@ async function updateName(req, res) {
             return res.status(404).json({ message: "Workspace not found" })
         }
 
+        await logModel.create({
+            workspaceId,
+            actor:req.user._id,
+            message:`Workspace name updated to ${name} by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
+        })
+
         return res.status(200).json({
-            messgae: "Workspace name updated successfully",
+            message: "Workspace name updated successfully",
             updatedWorkspace
         })
 
@@ -163,18 +170,36 @@ async function getWs(req,res){
 }
 
 
-async function chat(req,res){
 
-    const {workspaceId}=req.params
+async function getActivityLogs(req,res){
+    
+    try{
 
-    // const 
-
-    const workspace = await workspaceModel.findById(workspaceId)
+        const {workspaceId}=req.params
+        
+        const workspace = await workspaceModel.findById(workspaceId)
 
         if (!workspace) {
             return res.status(404).json({ message: "workspace does not exits" })
         }
-    
+
+        const logs=await logModel.find({
+            workspaceId 
+        }).populate("actor").sort({createdAt:-1})
+
+        if(logs.length=== 0){
+            return res.status(404).json({message:"logs not found"})
+        }
+
+        return res.status(200).json({message:"Logs fetched successfully",logs})
+
+
+    }catch(err){
+        res.status(500).json({
+            message:"Error while fetching logs",
+            error:err.message
+        })
+    }
 }
 
-module.exports = { wcCreate, getMyWorkspaces, deleteWorkspace, updateName, getWs}
+module.exports = { wcCreate, getMyWorkspaces, deleteWorkspace, updateName, getWs, getActivityLogs}

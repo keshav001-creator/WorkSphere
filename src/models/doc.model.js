@@ -4,6 +4,7 @@ const docSchema=new mongoose.Schema({
 
     workspaceId:{
         type:mongoose.Schema.Types.ObjectId,
+        ref:"workspace",
         required:true,
     },
     title:{
