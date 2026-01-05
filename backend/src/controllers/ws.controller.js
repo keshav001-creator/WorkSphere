@@ -11,11 +11,12 @@ const logModel = require("../models/activitylog")
 async function wcCreate(req, res) {
 
     try {
-        const { name } = req.body
+        const { name, description} = req.body
         userId = req.user._id
 
         const workspace = await workspaceModel.create({
             name,
+            description,
             ownerId: userId
         })
 

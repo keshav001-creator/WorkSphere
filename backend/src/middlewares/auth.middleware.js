@@ -18,6 +18,13 @@ async function authUser(req, res, next) {
 
         const User = await userModel.findById(decode.id)
 
+        if(!User){
+            return res.status(404).json({
+                message:"User not found"
+            })
+        }
+
+
         req.user = User
 
         next()

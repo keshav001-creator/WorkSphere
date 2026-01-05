@@ -7,6 +7,10 @@ const workspaceSchema=new mongoose.Schema({
         type:String,
         required:true
     },
+    description:{
+        type:String,
+        required:true
+    },
     ownerId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"user",

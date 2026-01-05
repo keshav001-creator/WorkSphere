@@ -176,4 +176,27 @@ async function getme(req, res) {
 }
 
 
-module.exports = { registerUser, loginUser, logoutUser, getme }
+async function getUser(req,res){
+
+    try{
+
+        const user=req.user
+
+
+        return res.status(200).json({
+            message:"User data fetched successfully",
+            user:user
+        })
+        
+
+    }catch(err){
+        return res.status(500).json({
+            message:"Error while fetching user data",
+            error:err.message
+        })
+    }
+
+
+}
+
+module.exports = { registerUser, loginUser, logoutUser, getme, getUser}
