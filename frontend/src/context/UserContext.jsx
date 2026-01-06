@@ -16,6 +16,7 @@ export const UserProvider = ({ children }) => {
             try {
 
                 const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/getUser`, { withCredentials: true })
+                console.log("res",res)
                 setUser(res.data.user)
 
             } catch (err) {

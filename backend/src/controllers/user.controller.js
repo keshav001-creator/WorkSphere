@@ -142,7 +142,7 @@ async function logoutUser(req, res) {
 async function getme(req, res) {
 
     try {
-        const { token } = req.cookies.token
+        const  token  = req.cookies.token
 
         if (!token) {
             return res.status(400).json({ message: "Token does not exists", authenticated: false })
@@ -208,7 +208,7 @@ async function updateUser(req,res){
         const allowedUpdates={
             "fullName.firstName":req.body.firstName,
             "fullName.lastName":req.body.lastName,
-            
+            "avatar":`https://api.dicebear.com/7.x/initials/svg?seed=${req.body.firstName}+${req.body.lastName}`
         }
 
 

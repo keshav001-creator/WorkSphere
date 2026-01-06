@@ -1,13 +1,16 @@
 import { useNavigate, Link } from "react-router-dom"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import axios from "../api/axios"
 import { RxCross2 } from "react-icons/rx";
 import { MdWorkspacesFilled } from "react-icons/md";
+import { UserContext } from "../context/UserContext";
 
 const Login = () => {
 
 
   const navigate = useNavigate()
+
+  const {setUser}=useContext(UserContext)
 
 
   const [Email, setEmail] = useState("")
@@ -33,7 +36,8 @@ const Login = () => {
         password: Password
       }, { withCredentials: true })
 
-      console.log(res)
+      console.log(res.data.User)
+      setUser(res.data.User)
 
       navigate("/dashboard")
 
@@ -50,7 +54,7 @@ const Login = () => {
 
         <div className='flex items-center justify-between'>
           <div className="flex items-center gap-x-1">
-            <MdWorkspacesFilled className='text-lg text-green-700' />
+            <MdWorkspacesFilled className='text-lg text-gray-400' />
             <h1 className='font-bold  text-lg'>WorkSphere</h1>
           </div>
           <button onClick={()=>navigate("/")}><RxCross2 /></button>

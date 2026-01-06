@@ -30,9 +30,15 @@ const Home = () => {
 
     const checkAuth = async () => {
 
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/getme`, { withCredentials: true })
+    try{
+
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/getme`, { withCredentials: true })
 
       console.log(res)
+      
+    }catch(err){
+
+    }
 
 
     }
@@ -97,19 +103,19 @@ const Home = () => {
 
         <header className="nav sticky top-0 z-30 flex p-4 items-center justify-between  lg:p-4 bg-white lg:border-b border-gray-400">
           <div className='flex items-center gap-x-1 lg:gap-x-2'>
-               <MdWorkspacesFilled className='text-md text-gray-500 lg:text-3xl' />
+            <MdWorkspacesFilled className='text-md text-gray-500 lg:text-3xl' />
             <h1 className='font-bold  text-lg lg:text-2xl'>WorkSphere</h1>
           </div>
 
           <div className="hidden lg:flex items-center justify-center gap-x-10">
-              <a href="#features" className="hover:text-black font-semibold">Features</a>
-  <a href="#how-it-works" className="hover:text-black font-semibold">How it works</a>
+            <a href="#features" className="hover:text-black font-semibold">Features</a>
+            <a href="#how-it-works" className="hover:text-black font-semibold">How it works</a>
           </div>
-          <button onClick={() =>{
-            if(window.innerWidth < 768){
+          <button onClick={() => {
+            if (window.innerWidth < 768) {
               navigate("/login")
-            }else{
-               setShowLogin(true)
+            } else {
+              setShowLogin(true)
             }
           }}
             className='border font-md rounded-md px-2 py-1 text-sm text-black lg:px-8 lg:py-2 lg:mr-6 lg:font-semibold hover:bg-black hover:text-white transition'>
@@ -134,12 +140,12 @@ const Home = () => {
             />
           </video>
 
-           <video
-           
+          <video
+
             autoPlay
             muted
             playsInline
-            className="absolute inset-0 w-full h-full object-cover -z-10 lg:hidden " 
+            className="absolute inset-0 w-full h-full object-cover -z-10 lg:hidden "
           >
             <source
               src="https://media.usepylon.com/PYLON_HOMEPAGE_HERO_Mobile_v001_Animation_Only.mp4"
@@ -168,7 +174,7 @@ const Home = () => {
               <button className='border border-gray-300 p-1 rounded-md mt-5 lg:px-4 lg:font-semibold hidden lg:block' >
                 Learn More </button>
             </div>
-            
+
 
 
 
@@ -193,12 +199,12 @@ const Home = () => {
 
           <div className='grid gap-4 grid-cols-1 max-w-3xl mx-auto lg:grid-cols-4 lg:max-w-6xl lg:mt-15 '>
 
-      
+
 
             <div className="group relative overflow-hidden p-4 bg-yellow-100 lg:bg-white border border-gray-300 lg:p-6 hover:shadow-lg transition">
               <div className="absolute bottom-0 left-0 w-full h-0 bg-yellow-100 transition-all duration-700 ease-out group-hover:h-full"></div>
               <div className="relative z-10">
-                <RiTeamLine  className="text-5xl mb-21" />
+                <RiTeamLine className="text-5xl mb-21" />
                 <h4 className="font-semibold mt-2 lg:text-xl">Team Workspaces</h4>
                 <p className="text-gray-700 mt-8 text-xs lg:text-sm">
                   Create dedicated workspaces with role-based access control.
@@ -211,7 +217,7 @@ const Home = () => {
             <div className="group relative overflow-hidden p-4   bg-green-100 lg:bg-white border border-gray-300 lg:p-6 hover:shadow-lg transition">
               <div className="absolute bottom-0 left-0 w-full h-0 bg-green-100 transition-all duration-700 ease-out group-hover:h-full"></div>
               <div className="relative z-10">
-                <RiRobot3Line  className="text-5xl mb-21"/>
+                <RiRobot3Line className="text-5xl mb-21" />
                 <h4 className="font-semibold mt-2 lg:text-xl">AI-Powered Documents</h4>
                 <p className="text-gray-700 mt-8 text-xs lg:text-sm">
                   Instantly summarise documents and save time with AI assistance.
@@ -224,7 +230,7 @@ const Home = () => {
             <div className="group relative overflow-hidden p-4 bg-amber-200 lg:bg-white border border-gray-300 lg:p-6 hover:shadow-lg transition">
               <div className="absolute bottom-0 left-0 w-full h-0 bg-amber-200 transition-all duration-700 ease-out group-hover:h-full"></div>
               <div className="relative z-10">
-                  <CiTimer className="text-5xl mb-21" />
+                <CiTimer className="text-5xl mb-21" />
                 <h4 className="font-semibold mt-2 lg:text-xl">Real-Time Updates</h4>
                 <p className="text-gray-700 mt-8 text-xs lg:text-sm">
                   Get instant notifications and collaborate without delays.
@@ -285,9 +291,9 @@ const Home = () => {
             {/* CLOSE */}
             <button
               onClick={() => setShowRegister(false)}
-              
+
             >
-              <RxCross2 className="absolute top-3 right-3 text-gray-400 hover:text-black"/>
+              <RxCross2 className="absolute top-3 right-3 text-gray-400 hover:text-black" />
             </button>
 
             {/* REGISTER FORM */}
@@ -366,9 +372,9 @@ const Home = () => {
 
             <button
               onClick={() => setShowLogin(false)}
-           
+
             >
-               <RxCross2 className="absolute top-3 right-3 text-gray-400 hover:text-black"/>
+              <RxCross2 className="absolute top-3 right-3 text-gray-400 hover:text-black" />
             </button>
 
             <form className="flex flex-col gap-y-3 mt-10"

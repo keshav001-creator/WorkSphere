@@ -9,7 +9,7 @@ import Team from "../pages/Team"
 import Documents from "../pages/Documents"
 import Activity from "../pages/Activity"
 import WorkspaceLayout from '../components/WorkspaceLayout'
-import {WorkspaceProvider } from '../context/WorkspaceContext'
+import { WorkspaceProvider } from '../context/WorkspaceContext'
 import Profile from "../pages/Profile"
 import CreateWorkspace from "../pages/CreateWorkspace"
 
@@ -20,8 +20,8 @@ const AppRoutes = () => {
       <Route path="/" element={<Home />}></Route>
       <Route path="/register" element={<Register />}></Route>
       <Route path="/login" element={<Login />}></Route>
-      <Route path="/profile" element={<Profile />}></Route>
       <Route path="/createWorkspace" element={<CreateWorkspace />}></Route>
+      <Route path="/profile" element={<Profile />}></Route>
 
       <Route element={<AppLayout />}>
         <Route path="/dashboard" element={<Dashboard />}></Route>
@@ -31,9 +31,9 @@ const AppRoutes = () => {
             <WorkspaceLayout />
           </WorkspaceProvider>}
         >
-          <Route path="task" element={<Task/>}></Route>
-          <Route path="documents" element={<Documents/>}></Route>
-          <Route path="activity" element={<Activity/>}></Route>
+          <Route path="task" element={<Task />}></Route>
+          <Route path="documents" element={<Documents />}></Route>
+          <Route path="activity" element={<Activity />}></Route>
           <Route path="team" element={<Team />}></Route>
 
 

@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken")
 const userModel = require("../models/user.model")
-
+const Redis = require("../db/redis")
 
 async function authUser(req, res, next) {
 
@@ -14,13 +14,18 @@ async function authUser(req, res, next) {
             })
         }
 
+        const blacklisted = await Redis.get(`blacklist:${token}`)
+        if (blacklisted) {
+            return res.status(401).json({ message: "Token revoked" })
+        }
+
         const decode = jwt.verify(token, process.env.JWT_SECRET_KEY)
 
         const User = await userModel.findById(decode.id)
 
-        if(!User){
+        if (!User) {
             return res.status(404).json({
-                message:"User not found"
+                message: "User not found"
             })
         }
 

@@ -1,38 +1,155 @@
 import { FaArrowLeft } from "react-icons/fa";
-import {useState, useContext, useEffect} from "react"
-import { UserContext } from "../context/UserContext";
-
+import { useState, useContext, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { UserContext } from "../context/UserContext"
+import axios from "../api/axios"
 
 const Profile = () => {
 
-  const {user}=useContext(UserContext)
+  const { user, setUser } = useContext(UserContext)
+
+
+  const navigate = useNavigate()
+
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: ""
+  })
+
+
+  useEffect(() => {
+    if (user) {
+      setForm({
+        firstName: user.fullName.firstName || "",
+        lastName: user.fullName.lastName || "",
+        email: user.email || ""
+      })
+    }
+  }, [user])
+
+
+  const handleChange = (e) => {
+
+    const { name, value } = e.target
+
+    setForm(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+
+  const handleSubmit = async (e) => {
+
+    e.preventDefault()
+
+    try {
+
+      const res = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/api/update`, {
+
+        firstName: form.firstName,
+        lastName: form.lastName
+
+      }, { withCredentials: true })
+
+      console.log(res.data.updatedUser)
+      setUser(res.data.updatedUser)
+
+    } catch (err) {
+      console.log(err)
+    }
+
+  }
+
+  const logoutHandler=async()=>{
+
+    try{
+
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/logout`,{},{withCredentials:true})
+      navigate("/")
+
+    }catch(err){
+      console.log(err)
+    }
+
+  }
 
 
   return (
 
 
-    <div className='min-h-screen bg-amber-50'>
-
-      <div className="">
-        <div className="flex items-center gap-x-2 bg-gray-200 p-2">
-          <FaArrowLeft className="text-xs"/>
-          <h1>Edit Profile</h1>
-        </div>
+    <div className='min-h-screen bg-white'>
 
 
-        <div className="flex flex-col items-center mt-10">
+      <div className="flex items-center gap-x-2 border-b border-gray-300 p-2">
+        <FaArrowLeft className="text-xs"
+          onClick={() => navigate("/dashboard")} />
+        <h1>Edit Profile</h1>
+      </div>
 
+
+      <div className="w-full p-4">
+
+        <div className="flex items-center justify-center">
           <img className="rounded-full h-20 w-20 "
-          src={user?.avatar}></img>
-
-          {/* < */}
-
-
-
+            src={user?.avatar}></img>
         </div>
 
+        <form className="flex flex-col gap-y-2 mt-3"
+          onSubmit={handleSubmit}>
+
+          <div className="flex flex-col">
+            <label className="text-xs font-semibold mb-1">First Name</label>
+            <input className="border border-gray-300 p-2 rounded-sm text-sm outline-none"
+              required
+              type="text"
+              name="firstName"
+              value={form.firstName}
+              onChange={handleChange}
+            ></input>
+            
+          </div>
+
+          <div className="flex flex-col ">
+            <label className="text-xs font-semibold mb-1">Last Name</label>
+            <input className="border border-gray-300 p-2 rounded-sm text-sm outline-none"
+              required
+              type="text"
+              name="lastName"
+              value={form.lastName}
+              onChange={handleChange}
+            ></input>
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-xs font-semibold mb-1">Email</label>
+            <input className="border border-gray-400 bg-gray-100 p-2 rounded-sm text-sm outline-none cursor-not-allowed"
+              required
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              disabled
+            ></input>
+          </div>
+
+
+
+          {/* <button className="bg-white border border-gray-300 px-2 py-1 rounded-sm text-black">Cancel</button> */}
+          <button className="bg-black p-2 rounded-sm text-sm text-white mt-3"
+          onClick={()=>navigate("/dashboard")}
+          >Update Profile</button>
+
+        </form>
+
+        <button className="bg-red-700 p-2 rounded-sm text-sm text-white mt-2 w-full"
+          onClick={logoutHandler}
+          >Log Out</button>
 
       </div>
+
+
+
 
 
 

@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { MdWorkspacesFilled } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import axios from "../api/axios"
+import { UserContext } from "../context/UserContext";
 
 const Register = () => {
 
@@ -12,6 +13,7 @@ const Register = () => {
   const [lastName, setLastName] = useState("")
   const [Email, setEmail] = useState("")
   const [Password, setPassword] = useState("")
+  const {setUser}=useContext(UserContext)
 
 
   useEffect(() => {
@@ -34,7 +36,8 @@ const Register = () => {
         password: Password
       }, { withCredentials: true })
 
-      console.log(res)
+      // console.log(res)
+      setUser(res.data.User)
 
       navigate("/dashboard")
 
