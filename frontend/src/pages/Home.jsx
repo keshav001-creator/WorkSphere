@@ -34,10 +34,12 @@ const Home = () => {
 
         const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/getme`, { withCredentials: true })
 
-      console.log(res)
+        if (res.data.authenticated) {
+          navigate("/dashboard")
+        }
       
     }catch(err){
-
+      console.log(err)
     }
 
 

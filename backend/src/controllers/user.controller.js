@@ -148,7 +148,7 @@ async function getme(req, res) {
             return res.status(400).json({ message: "Token does not exists", authenticated: false })
         }
 
-        const isBlacklisted = Redis.get(`blacklist:${token}`)
+        const isBlacklisted =await Redis.get(`blacklist:${token}`)
 
         if (isBlacklisted) {
             return res.status(400).json({
