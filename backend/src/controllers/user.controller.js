@@ -18,7 +18,7 @@ async function registerUser(req, res) {
             })
         }
 
-        const avatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${email}`
+        const avatar = `https://api.dicebear.com/7.x/initials/svg?seed=${firstName}+${lastName}`
 
 
 
@@ -199,4 +199,41 @@ async function getUser(req,res){
 
 }
 
-module.exports = { registerUser, loginUser, logoutUser, getme, getUser}
+async function updateUser(req,res){
+
+    try{
+
+        const userId=req.user._id
+
+        const allowedUpdates={
+            "fullName.firstName":req.body.firstName,
+            "fullName.lastName":req.body.lastName,
+            
+        }
+
+
+        const updatedUser=await userModel.findByIdAndUpdate({
+            _id:userId
+        },{$set:allowedUpdates}, {new:true})
+
+        if(!updatedUser){   
+            return res.status(404).json({message:"User not found"})
+        }
+        
+
+        return res.status(200).json({
+            message:"User updated successfully",
+            updatedUser
+        })
+
+
+    }catch(err){
+        return res.status(500).json({
+            message:"Error while updating user info",
+            error:err.message
+        })
+    }
+
+}
+
+module.exports = { registerUser, loginUser, logoutUser, getme, getUser, updateUser}

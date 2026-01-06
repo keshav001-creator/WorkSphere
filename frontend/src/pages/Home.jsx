@@ -154,7 +154,7 @@ const Home = () => {
             <p className='text-sm text-black mt-3 lg:text-xl lg:text-center'>Create task, collaborate on documents, and get AI-powered summaries all in one place. </p>
 
             <div className="flex justify-center gap-x-3 lg:gap-x-5 ">
-              <button className='bg-black text-white p-2 rounded-md mt-5 lg:flex lg:items-center lg:justify-center lg:font-semibold lg:px-4 hover:shadow-lg transition'
+              <button className='bg-black text-white text-sm p-2 rounded-md mt-5 lg:flex lg:items-center lg:justify-center lg:font-semibold lg:px-4 hover:shadow-lg transition'
                 onClick={() => {
                   if (window.innerWidth < 768) {
                     navigate("/register")

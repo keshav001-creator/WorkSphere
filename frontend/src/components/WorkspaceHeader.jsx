@@ -7,20 +7,16 @@ import WorkspaceNav from './WorkspaceNav'
 const WorkspaceHeader = () => {
 
     const { workspace } = useContext(WorkspaceContext)
+    // console.log(workspace?.name)
 
-    return (
+    return (    
 
-        <div className='flex flex-col'>
+        <div className='px-5 py-7 border-b border-gray-300'>
 
-            <div>
-                <h1>{workspace.name}</h1>
-                <p>{workspace.description}</p>
+            <div className=''>
+                <h1>{workspace?.name}</h1>
+                <p>{workspace?.description}</p>
             </div>
-
-            <div>
-                <WorkspaceNav />
-            </div>
-
 
         </div>
     )
