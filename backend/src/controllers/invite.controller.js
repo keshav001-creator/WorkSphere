@@ -38,6 +38,8 @@ async function sendInvite(req, res) {
                 message: "you have been invited to join the workspace",
                 token
             })
+
+            return res.status(404).json({message:"Invited user not found!"})
         }
 
 

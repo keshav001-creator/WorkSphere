@@ -90,7 +90,7 @@ const CreateWorkspace = () => {
                         >Cancel</button>
 
                         <button className="bg-black text-white px-2 py-1 rounded-sm"
-                        onClick={()=>navigate("/dashbord")}
+                        onClick={()=>navigate("/dashboard")}
                         >Create</button>
                     </div>
 

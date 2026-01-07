@@ -11,7 +11,7 @@ const WorkspaceLayout = () => {
         <div className="flex flex-col flex-1 w-full">
             <WorkspaceHeader />
              <WorkspaceNav />
-            <div className="flex-1 flex overflow-y-auto ">
+            <div className="flex-1 flex overflow-y-auto">
                 <Outlet />
             </div>
         </div>

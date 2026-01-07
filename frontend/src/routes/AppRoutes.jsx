@@ -31,6 +31,7 @@ const AppRoutes = () => {
             <WorkspaceLayout />
           </WorkspaceProvider>}
         >
+          <Route index element={<Task />} />
           <Route path="task" element={<Task />}></Route>
           <Route path="documents" element={<Documents />}></Route>
           <Route path="activity" element={<Activity />}></Route>

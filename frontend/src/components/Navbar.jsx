@@ -1,9 +1,9 @@
-import { CiBellOn } from "react-icons/ci";
 import { UserContext } from "../context/UserContext"
 import { useState, useContext } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
-import { MdWorkspacesFilled } from "react-icons/md";
+import { MdWorkspacesOutline } from "react-icons/md";
 import { FaArrowLeft } from "react-icons/fa";
+import { LuBell } from "react-icons/lu";
 
 const Navbar = () => {
 
@@ -18,7 +18,7 @@ const Navbar = () => {
 
   return (
 
-    <div className='sticky top-0 z-30 w-full flex items-center justify-between bg-white p-2 border-b border-gray-300'>
+    <div className='fixed top-0 z-30 w-full flex items-center justify-between bg-white p-4 border-b border-gray-300'>
 
       <div className='flex items-center justify-center gap-x-1 '>
 
@@ -34,19 +34,19 @@ const Navbar = () => {
 
         ) : (
           <div className='flex items-center gap-x-1 lg:gap-x-2'>
-            <MdWorkspacesFilled className='text-md text-gray-500 lg:text-3xl' />
-            <h1 className='font-bold  text-sm lg:text-2xl'>WorkSphere</h1>
+           <div className="bg-gray-800 rounded-lg p-1"> <MdWorkspacesOutline className='text-xl text-white lg:text-3xl' /></div>
+            <h1 className='font-semibold  text-lg lg:text-2xl'>WorkSphere</h1>
           </div>
         )}
       </div>
 
-      <div className="flex gap-x-2">
-        <CiBellOn className="text-xl"/>
+      <div className="flex gap-x-4 items-center">
+        <LuBell  className="text-xl"/>
 
         <div className="rounded-full"
           onClick={() => navigate("/profile")}
         >
-          <img className="w-5 h-5 rounded-full" src={user?.avatar}></img>
+          <img className="w-7 h-7 rounded-full" src={user?.avatar}></img>
         </div>
 
       </div>

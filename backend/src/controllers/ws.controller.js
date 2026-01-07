@@ -74,9 +74,7 @@ async function deleteWorkspace(req, res) {
     try {
         const { workspaceId } = req.params
 
-        const workspace = await workspaceModel.findById({
-            workspaceId
-        })
+        const workspace = await workspaceModel.findById(workspaceId)
 
         if (!workspace) {
             return res.status(400).json({ message: "Workspace does not exists" })
@@ -102,47 +100,47 @@ async function deleteWorkspace(req, res) {
 }
 
 
-async function updateName(req, res) {
+// async function updateName(req, res) {
 
-    try {
-        const { name } = req.body
-        const { workspaceId } = req.params
+//     try {
+//         const { name } = req.body
+//         const { workspaceId } = req.params
 
-        const workspace = await workspaceModel.findById(workspaceId)
+//         const workspace = await workspaceModel.findById(workspaceId)
 
-        if (!workspace) {
-            return res.status(404).json({ message: "workspace does not exits" })
-        }
+//         if (!workspace) {
+//             return res.status(404).json({ message: "workspace does not exits" })
+//         }
 
-        const updatedWorkspace = await workspaceModel.findOneAndUpdate({
-            _id:workspaceId,
-            ownerId: req.user._id
-        }, req.body, { new: true })
+//         const updatedWorkspace = await workspaceModel.findOneAndUpdate({
+//             _id:workspaceId,
+//             ownerId: req.user._id
+//         }, req.body, { new: true })
 
 
-        if (!updatedWorkspace) {
-            return res.status(404).json({ message: "Workspace not found" })
-        }
+//         if (!updatedWorkspace) {
+//             return res.status(404).json({ message: "Workspace not found" })
+//         }
 
-        await logModel.create({
-            workspaceId,
-            actor:req.user._id,
-            message:`Workspace name updated to ${name} by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
-        })
+//         await logModel.create({
+//             workspaceId,
+//             actor:req.user._id,
+//             message:`Workspace name updated to ${name} by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
+//         })
 
-        return res.status(200).json({
-            message: "Workspace name updated successfully",
-            updatedWorkspace
-        })
+//         return res.status(200).json({
+//             message: "Workspace name updated successfully",
+//             updatedWorkspace
+//         })
 
-    } catch (err) {
-        return res.status(500).json({
-            message: "Error while updating workspace",
-            error: err.message
-        })
-    }
+//     } catch (err) {
+//         return res.status(500).json({
+//             message: "Error while updating workspace",
+//             error: err.message
+//         })
+//     }
 
-}
+// }
 
 
 async function getWs(req,res){
@@ -204,4 +202,4 @@ async function getActivityLogs(req,res){
     }
 }
 
-module.exports = { wcCreate, getMyWorkspaces, deleteWorkspace, updateName, getWs, getActivityLogs}
+module.exports = { wcCreate, getMyWorkspaces, deleteWorkspace, getWs, getActivityLogs}

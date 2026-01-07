@@ -15,7 +15,7 @@ const server=http.createServer(app)
 
 const io=new Server(server,{
     cors:{
-        origin:"http://localhost:3000",
+        origin:process.env.FRONTEND_URL,
         credentials:true
     }
 })
@@ -25,7 +25,7 @@ const io=new Server(server,{
 // socket is incoming connection attempt
 
 io.use(async(socket,next)=>{
-
+    
     try{
 
         const cookies=cookie.parse(socket.handshake.headers?.cookie || "")

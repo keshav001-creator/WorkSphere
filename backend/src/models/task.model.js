@@ -23,6 +23,13 @@ const taskSchema=new mongoose.Schema({
         default:"Todo",
         required:true,
     },
+    assignTo:{
+        type:String,
+    },
+    priority:{
+        type:String,
+        required:true
+    },
     createdBy:{
         type: mongoose.Schema.Types.ObjectId,
         ref:"user",

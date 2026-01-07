@@ -8,7 +8,7 @@ const Task = () => {
   return (
     <div className='p-5 bg-gray-100 min-h-full w-full'>
 
-
+task
 
     </div>
   )

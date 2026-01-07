@@ -11,7 +11,7 @@ router.get("/workspaces",authUser,controller.getMyWorkspaces)
 
 router.post("/workspace",authUser,controller.wcCreate)
 router.delete("/workspaces/:workspaceId",authUser,rbac(["Owner"]),controller.deleteWorkspace)
-router.patch("/workspaces/:workspaceId",authUser,rbac(["Admin","Owner"]),controller.updateName)
+// router.patch("/workspaces/:workspaceId",authUser,rbac(["Admin","Owner"]),controller.updateName)
 router.get("/workspaces/:workspaceId",authUser,controller.getWs)
 
 // activity logs

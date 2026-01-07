@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect, createContext } from "react"
 import axios from "../api/axios"
-
+import socket from "../Socket"
 
 export const UserContext = createContext()
 
@@ -25,6 +25,17 @@ export const UserProvider = ({ children }) => {
         }
         fetchUser()
     }, [])
+
+    useEffect(()=>{
+        if(user){
+            socket.connect()
+        }else{
+            socket.disconnect()
+        }
+
+    },[user])
+
+
 
 
     return (

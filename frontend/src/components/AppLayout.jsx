@@ -11,7 +11,7 @@ const AppLayout = () => {
         <Navbar/>
         
 
-       <div className='flex-1 flex '>
+       <div className='flex-1 flex overflow-y-auto pt-16'>
         <Outlet/>
        </div>
 

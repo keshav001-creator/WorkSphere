@@ -2,43 +2,58 @@ import { MdOutlineTask } from "react-icons/md";
 import { GrDocumentText } from "react-icons/gr";
 import { AiOutlineTeam } from "react-icons/ai";
 import { BsActivity } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 
 const WorkspaceNav = () => {
 
-    const navigate=useNavigate()
+    const navigate = useNavigate()
 
     return (
-
-        <div className='flex px-5 py-2 justify-evenly border-b border-gray-300 text-xs font-semibold'>
-
-            <div className="flex items-center gap-x-1"
-            onClick={()=>navigate("task")}
+            
+        <div className="fixed bottom-0 z-30 flex  justify-evenly gap-x-6 border-t border-gray-300 px-4 bg-white pt-2 w-full text-xs">
+            <NavLink
+                to="" end
+                    className={({ isActive }) =>
+                    isActive
+                        ? "border-b-2 border-gray-900 text-gray-900 pb-2"
+                        : "text-gray-600 pb-2"
+                }
             >
-                <MdOutlineTask />
-                <h1>Tasks</h1>
-            </div>
-            <div className="flex items-center gap-x-1"
-             onClick={()=>navigate("documents")}
-            >
-                < GrDocumentText />
-                <h1>Documents</h1>
-            </div>
+               <div className="flex flex-col items-center"> <MdOutlineTask/><div>Tasks</div></div>
+            </NavLink>
 
-            <div className="flex items-center gap-x-1"
-             onClick={()=>navigate("activity")}
+            <NavLink
+                to="documents"
+                className={({ isActive }) =>
+                    isActive
+                        ? "border-b-2 border-gray-900 text-gray-900 pb-2"
+                        : "text-gray-500 pb-2"
+                }
             >
-                <BsActivity />
-                <h1>Activity</h1>
-            </div>
+              <div className="flex flex-col items-center"><GrDocumentText/><div>Documents</div></div>
+            </NavLink>
 
-            <div className="flex items-center gap-x-1"
-             onClick={()=>navigate("team")}
+             <NavLink
+                to="activity"
+                className={({ isActive }) =>
+                    isActive
+                        ? "border-b-2 border-gray-900 text-gray-900 pb-2"
+                        : "text-gray-500 pb-2"
+                }
             >
-                <AiOutlineTeam />
-                <h1>Team</h1>
-            </div>
+                <div className="flex flex-col items-center"><BsActivity/><div>Activity</div></div>
+            </NavLink>
 
+            <NavLink
+                to="team"
+                className={({ isActive }) =>
+                    isActive
+                        ? "border-b-2 border-gray-900 text-gray-900 pb-2"
+                        : "text-gray-500 pb-2"
+                }
+            >
+              <div className="flex flex-col items-center"><AiOutlineTeam/><div>Team</div></div>
+            </NavLink>
         </div>
     )
 }
