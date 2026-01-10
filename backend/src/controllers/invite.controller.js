@@ -3,7 +3,8 @@ const inviteModel = require("../models/invite.model")
 const crypto = require("crypto")
 const Notification = require("../models/notification")
 const userModel = require("../models/user.model")
-const logModel=require("../models/activitylog")
+const logModel = require("../models/activitylog")
+const workspaceModel = require("../models/workspace.model")
 
 async function sendInvite(req, res) {
 
@@ -11,6 +12,10 @@ async function sendInvite(req, res) {
         const { email, role } = req.body
         const { workspaceId } = req.params
 
+        const workspace=await workspaceModel.findById(workspaceId)
+         if (!workspace) {
+            return res.status(404).json({ message: "Workspace not found" })
+        }
 
         const token = crypto.randomBytes(32).toString("hex")
 
@@ -24,23 +29,24 @@ async function sendInvite(req, res) {
 
         const invitedUser = await userModel.findOne({ email })
 
-        if (invitedUser) {
-            await Notification.create({
-                userId: invitedUser._id,
-                type: "Invite",
-                message: "You have been invited to join the workspace",
-                token
-            })
-
-            const io = req.app.get("io")
-            io.to(invitedUser._id.toString()).emit("notification", {
-                type: "Invite",
-                message: "you have been invited to join the workspace",
-                token
-            })
-
-            return res.status(404).json({message:"Invited user not found!"})
+        if (!invitedUser) {
+            return res.status(404).json({ message: "Invited user not found!" })
         }
+
+
+        await Notification.create({
+            userId: invitedUser._id,
+            type: "Invite",
+            message: `You have been invited to join the workspace ${workspace.name}`,
+            token,
+        })
+
+        const io = req.app.get("io")
+        io.to(invitedUser._id.toString()).emit("notification", {
+            type: "Invite",
+            message: `You have been invited to join the workspace ${workspace.name} by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`,
+            token
+        })
 
 
         await logModel.create({
@@ -86,14 +92,20 @@ async function acceptInvite(req, res) {
 
 
         if (!invite) {
-            await Notification.updateMany({ token }, { isRead: true });
+            await Notification.updateMany(
+                {
+                    userId: req.user._id,
+                    token,
+                    isRead: false
+                },
+                { $set: { isRead: true } }
+            )
             return res.status(400).json({ message: "Invalid or expired token" })
         }
 
         if (invite.email !== userEmail) {
             return res.status(403).json({ message: "Invitation is not for you" })
         }
-
 
         const exists = await wsUserModel.findOne({
             workspaceId: invite.workspaceId,
@@ -106,6 +118,12 @@ async function acceptInvite(req, res) {
 
             invite.used = true
             await invite.save()
+
+            await Notification.updateMany({
+                userId: req.user._id,
+                token,
+                isRead: false
+            }, { $set: { isRead: true } });
 
             return res.status(200).json({ message: "Workspace role update successfully" })
         }
@@ -120,21 +138,26 @@ async function acceptInvite(req, res) {
 
         await invite.save()
 
-        await Notification.updateMany({ token }, { isRead: true });
+        await Notification.updateMany({
+            userId: req.user._id,
+            token,
+            isRead: false
+        }, { $set: { isRead: true } });
 
-            await logModel.create({
-            workspaceId,
+        await logModel.create({
+            workspaceId: invite.workspaceId,
             actor: req.user._id,
-            message: `Invitation is accepted by ${email}`
+            message: `Invitation is accepted by ${userEmail}`
         })
 
+        const io = req.app.get("io")
+
+        io.to(userId.toString()).emit("workspaceAdded")
 
         return res.status(201).json({
             message: "Invitation accepted successfully",
             wsUser
         })
-
-
 
     } catch (err) {
 
@@ -145,4 +168,27 @@ async function acceptInvite(req, res) {
     }
 }
 
-module.exports = { sendInvite, acceptInvite }
+async function getNotification(req, res) {
+
+    try {
+
+        const userId = req.user._id
+
+        const notifications = await Notification.find({
+            userId,
+            isRead: false
+        }).sort({ createdAt: -1 })
+
+        return res.status(200).json({
+            message: "Notifications fetched successfully",
+            notifications
+        })
+    } catch (err) {
+        return res.status(500).json({
+            message: "Error while getting notifications ",
+            error: err.message
+        })
+    }
+}
+
+module.exports = { sendInvite, acceptInvite, getNotification }

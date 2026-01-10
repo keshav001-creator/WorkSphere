@@ -1,12 +1,18 @@
 import { Outlet } from 'react-router-dom'
 import Navbar from './Navbar'
+import { useContext } from 'react'
+import { UserContext } from '../context/UserContext'
 
 const AppLayout = () => {
+
+  const {loading}=useContext(UserContext)
 
 
   return (
 
-    <div className='min-h-screen flex flex-col '>
+    loading ? ("loading...") : (
+
+      <div className='min-h-screen flex flex-col '>
 
         <Navbar/>
         
@@ -17,6 +23,7 @@ const AppLayout = () => {
 
 
     </div>
+    )
 
   )
 }

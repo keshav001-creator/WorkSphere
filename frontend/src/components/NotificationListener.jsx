@@ -3,7 +3,7 @@ import { UserContext } from "../context/UserContext"
 import socket from "../Socket"
 const NotificationListener = () => {
 
-    const { user } = useContext(UserContext)
+    const { user,setNotifications } = useContext(UserContext)
 
     useEffect(() => {
 
@@ -12,7 +12,8 @@ const NotificationListener = () => {
         }
 
         const handleNotification = (data) => {
-            console.log("New notification:", data)
+            // console.log("New notification:", data)
+            setNotifications(prev=>[...prev,data])
         }
 
         socket.on("notification", handleNotification)

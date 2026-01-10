@@ -6,6 +6,7 @@ import { AiOutlineTeam } from "react-icons/ai";
 import { CiMenuKebab } from "react-icons/ci";
 import axios from "../api/axios"
 import { useNavigate } from "react-router-dom";
+import socket from "../Socket";
 
 
 const Dashboard = () => {
@@ -30,10 +31,7 @@ const Dashboard = () => {
     }
   }
 
-
-  useEffect(() => {
-
-    const fetchWorkspaces = async () => {
+  const fetchWorkspaces = async () => {
 
       try {
 
@@ -41,14 +39,20 @@ const Dashboard = () => {
         console.log(res.data.workspaces)
         setWorkspaces(res.data.workspaces)
 
-
-
       } catch (err) {
         console.log(err)
       }
     }
 
+  useEffect(() => {
+
     fetchWorkspaces()
+
+    socket.on("workspaceAdded",fetchWorkspaces)
+
+    return ()=>{
+      socket.off("workspaceAdded",fetchWorkspaces)
+    }
   }, [])
 
   return (

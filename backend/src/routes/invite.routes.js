@@ -9,5 +9,7 @@ const router=express.Router()
 router.post("/workspaces/:workspaceId/invite",authUser,rbac(["Owner","Admin"]),controller.sendInvite)
 router.post("/invite/accept/:token",authUser,controller.acceptInvite)
 
+router.get("/notifications",authUser,controller.getNotification)
+
 
 module.exports=router
