@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import axios from "../api/axios"
 import { WiStars } from "react-icons/wi";
 
@@ -10,6 +10,7 @@ const ViewDoc = () => {
         title: "",
         content: ""
     })
+    const navigate = useNavigate()
 
     const [isLoading, setIsLoading] = useState(false)
     const [AISummary, setAISummary] = useState("")
@@ -121,8 +122,18 @@ const ViewDoc = () => {
                         onChange={handleChange}
                     ></textarea>
 
-                    <button className="border  px-2  py-1 rounded-sm w-full border-gray-300 mt-1"
-                        type="submit">Save Changes</button>
+
+                    <div className='flex gap-x-2'>
+                        <button className="border  px-2  py-1 rounded-sm w-full border-gray-300 mt-1"
+                            type="button"
+                            onClick={() => navigate(`/workspaces/${workspaceId}/documents`)}
+                        >Cancel</button>
+
+                        <button className="border  px-2  py-1 rounded-sm w-full border-gray-300 mt-1"
+                            type="submit"
+                            onClick={() => navigate(`/workspaces/${workspaceId}/documents`)}
+                        >Save Changes</button>
+                    </div>
                 </form>
             </div>
 

@@ -64,7 +64,7 @@ const Activity = () => {
         </div>
       ) : (
         logs.map(log => (
-          <div key={log.index}
+          <div key={log._id}
             className="flex gap-x-1 items-center border border-gray-200 shadow-sm p-2 mt-2 rounded-lg bg-white">
 
 
