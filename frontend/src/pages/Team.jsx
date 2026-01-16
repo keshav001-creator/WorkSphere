@@ -1,18 +1,62 @@
-import { useState, useContext } from "react"
+import { useState, useContext, useEffect } from "react"
 import { useParams } from "react-router-dom";
 import { BsPersonPlus } from "react-icons/bs";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
+import { FiShield } from "react-icons/fi";
 import axios from "../api/axios"
+import socket from "../Socket";
+import { UserContext } from "../context/UserContext";
 
 
 const Team = () => {
 
 
+  const [team, setTeam] = useState([])
   const [showForm, setShowForm] = useState(false)
   const [Email, setEmail] = useState("")
   const [role, setRole] = useState("")
   const { workspaceId } = useParams()
+  const { user } = useContext(UserContext)
+
+
+  function timeAgo(dateString) {
+    const now = new Date()
+    const created = new Date(dateString)
+    const diffMs = now - created
+
+    const seconds = Math.floor(diffMs / 1000)
+    const minutes = Math.floor(seconds / 60)
+    const hours = Math.floor(minutes / 60)
+    const days = Math.floor(hours / 24)
+
+    if (seconds < 60) return "Just now"
+    if (minutes < 60) return `${minutes} min ago`
+    if (hours < 24) return `${hours} hr ago`
+    if (days === 1) return "Yesterday"
+    if (days < 7) return `${days} days ago`
+
+    return created.toLocaleDateString()
+  }
+
+  const fetchTeamMembers = async () => {
+
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/team`, { withCredentials: true })
+
+      setTeam(res.data.teamMember)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  useEffect(() => {
+    fetchTeamMembers()
+
+    socket.on("roleChanged", fetchTeamMembers)
+
+    return () => socket.off("roleChanged", fetchTeamMembers)
+  }, [])
 
 
   const handleSubmit = async (e) => {
@@ -25,7 +69,7 @@ const Team = () => {
         role
       }, { withCredentials: true })
       console.log(res)
-      setEmail("")  
+      setEmail("")
       setRole("")
 
     } catch (err) {
@@ -38,7 +82,7 @@ const Team = () => {
 
     <>
       <div className={`bg-gray-50 w-full p-5 flex flex-col border-b border-gray-400 overflow-y-auto 
-  ${showForm ? "pointer-events-none select-none" : ""}`}>
+          ${showForm ? "pointer-events-none select-none" : ""}`}>
 
         <div className=''>
           <div>
@@ -55,12 +99,78 @@ const Team = () => {
         </div>
 
 
+        <div className="border border-gray-300 flex flex-col p-2 gap-y-2 rounded-md mt-10 ">
+          <div className="p-3 flex items-center gap-x-1">
+            <FiShield className="text-lg" />
+            <h1 className="font-semibold text-center text-lg">Role Permissions</h1>
+          </div>
+
+          <div className="bg-white p-2 rounded-lg border border-gray-300">
+            <h1 className="font-semibold text-xs px-2 py-1 bg-gray-100 border border-gray-200 rounded-lg inline-block">Owner</h1>
+            <p className="text-xs text-gray-500 mt-1">Full workspace control, can delete workspace, invite members, and manage all settings.</p>
+          </div>
+
+          <div className="bg-white p-2 rounded-lg border border-gray-300 ">
+            <h1 className="font-semibold text-xs  px-2 py-1 bg-gray-100 border border-gray-200 rounded-lg inline-block">Admin</h1>
+            <p className="text-xs text-gray-500 mt-1" >Access to full workspace control, deleting workspace and inviting member is forbidden.</p>
+          </div>
+
+          <div className="bg-white p-2 rounded-lg border border-gray-300">
+            <h1 className="font-semibold text-xs  px-2 py-1 bg-gray-100 border border-gray-200 rounded-lg inline-block">Member</h1>
+            <p className="text-xs text-gray-500 mt-1">Read-only access to all workspace content.</p>
+          </div>
+        </div>
+
+        {team.length ? (
+          <div className="border border-gray-200 mt-5 rounded-lg p-2 shadow-md">
+
+            {team.map(member => (
+              <div className="p-4 border border-gray-200 justify-between bg-white mt-2 rounded-md "
+                key={member._id}>
+
+                <div className="flex gap-x-2 items-center">
+                  <div className="">
+                    <img className="h-8 w-8 rounded-full"
+                      src={`${member.userId.avatar}`}></img>
+                  </div>
+
+                  <div>
+
+                    <div className="flex gap-x-3 items-center">
+                      <h1 className="font-semibold">{member.userId.fullName.firstName} {member.userId.fullName.lastName}</h1>
+                      {user && member.userId._id === user._id ? (<p className="bg-blue-50 text-xs text-blue-700 border border-blue-200 rounded-lg font-semibold px-2 py-1">You</p>) : ""}
+                    </div>
+
+                    <p className="text-xs text-gray-500 mt-1">{member.userId.email}</p>
+                    <p className="text-xs mt-1 text-gray-500">{`Joined- ${timeAgo(member.createdAt)}`}</p>
+                  </div>
+
+                </div>
+
+
+
+                <div className="">
+                  <h1 className="text-xs bg-gray-100 border border-gray-200 py-1 px-2 rounded-md inline-block ">{member.role}</h1>
+                </div>
+
+
+
+              </div>
+            )
+
+            )}
+          </div>
+        ) : <h1 className="text-center mt-10 ">"Loading Team Members..."</h1>
+        }
+
+
+
 
 
       </div>
 
       {showForm && (
-        <div className="fixed inset-0 z-30 bg-yellow flex justify-center items-center bg-black/50">
+        <div className="fixed inset-0 z-30  flex justify-center items-center bg-black/50">
 
           <div className="bg-white h-[95vh] w-[90vw] p-2 rounded-2xl">
 

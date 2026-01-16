@@ -8,6 +8,7 @@ async function authUser(req, res, next) {
 
         const { token } = req.cookies
 
+
         if (!token) {
             return res.status(401).json({
                 message: "User unauthenticated"

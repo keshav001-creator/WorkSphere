@@ -5,7 +5,6 @@ const wsRoutes=require("./routes/workspace.routes")
 const InviteRoutes=require("./routes/invite.routes")
 const DocRoutes=require("./routes/document.routes")
 const taskRoutes=require("./routes/task.routes")
-const notificationRoutes=require("./routes/notification.routes")
 const cors=require("cors")
 
 
@@ -24,7 +23,6 @@ app.use("/api",wsRoutes)
 app.use("/api",InviteRoutes)
 app.use("/api",DocRoutes)
 app.use("/api",taskRoutes)
-app.use("/api",notificationRoutes)
 
 
 

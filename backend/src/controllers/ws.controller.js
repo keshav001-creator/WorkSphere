@@ -11,7 +11,7 @@ const logModel = require("../models/activitylog")
 async function wcCreate(req, res) {
 
     try {
-        const { name, description, icon} = req.body
+        const { name, description, icon } = req.body
         userId = req.user._id
 
         const workspace = await workspaceModel.create({
@@ -51,8 +51,8 @@ async function getMyWorkspaces(req, res) {
             userId
         }).populate("workspaceId")
 
-        if (!workspaces) {
-            return res.status(404).json({ message: "no workspace found" })
+        if (workspaces.length === 0) {
+            return res.status(200).json({ message: "Workspaces are not present in collection", workspaces:[] })
         }
 
         return res.status(200).json({
@@ -100,106 +100,91 @@ async function deleteWorkspace(req, res) {
 }
 
 
-// async function updateName(req, res) {
+async function getWs(req, res) {
 
-//     try {
-//         const { name } = req.body
-//         const { workspaceId } = req.params
+    try {
 
-//         const workspace = await workspaceModel.findById(workspaceId)
+        const { workspaceId } = req.params
 
-//         if (!workspace) {
-//             return res.status(404).json({ message: "workspace does not exits" })
-//         }
-
-//         const updatedWorkspace = await workspaceModel.findOneAndUpdate({
-//             _id:workspaceId,
-//             ownerId: req.user._id
-//         }, req.body, { new: true })
-
-
-//         if (!updatedWorkspace) {
-//             return res.status(404).json({ message: "Workspace not found" })
-//         }
-
-//         await logModel.create({
-//             workspaceId,
-//             actor:req.user._id,
-//             message:`Workspace name updated to ${name} by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
-//         })
-
-//         return res.status(200).json({
-//             message: "Workspace name updated successfully",
-//             updatedWorkspace
-//         })
-
-//     } catch (err) {
-//         return res.status(500).json({
-//             message: "Error while updating workspace",
-//             error: err.message
-//         })
-//     }
-
-// }
-
-
-async function getWs(req,res){
-    
-    try{
-
-        const {workspaceId}=req.params
-
-         const workspace = await workspaceModel.findById(workspaceId)
-
-        if (!workspace) {
-            return res.status(404).json({ message: "workspace does not exits" })
-        }
-
-        return res.status(200).json({
-            message:"Workspace fetched successfully",
-            workspace
-        })
-    }catch(err){
-
-        return res.status(500).json({
-            message:"Error while fetching workspace",
-            error:err.message
-        })
-
-    }
-}
-
-
-
-async function getActivityLogs(req,res){
-    
-    try{
-
-        const {workspaceId}=req.params
-        
         const workspace = await workspaceModel.findById(workspaceId)
 
         if (!workspace) {
             return res.status(404).json({ message: "workspace does not exits" })
         }
 
-        const logs=await logModel.find({
-            workspaceId 
-        }).populate("actor").sort({createdAt:-1})
+        return res.status(200).json({
+            message: "Workspace fetched successfully",
+            workspace
+        })
+    } catch (err) {
 
-        if(logs.length=== 0){
-            return res.status(404).json({message:"logs not found"})
+        return res.status(500).json({
+            message: "Error while fetching workspace",
+            error: err.message
+        })
+
+    }
+}
+
+
+
+async function getActivityLogs(req, res) {
+
+    try {
+
+        const { workspaceId } = req.params
+
+        const workspace = await workspaceModel.findById(workspaceId)
+
+        if (!workspace) {
+            return res.status(404).json({ message: "workspace does not exits" })
         }
 
-        return res.status(200).json({message:"Logs fetched successfully",logs})
+        const logs = await logModel.find({
+            workspaceId
+        }).populate("actor").sort({ createdAt: -1 })
+
+        if (logs.length === 0) {
+            return res.status(200).json({ message: "Logs are not present in collection", logs:[] })
+        }
+
+        return res.status(200).json({ message: "Logs fetched successfully", logs })
 
 
-    }catch(err){
+    } catch (err) {
         res.status(500).json({
-            message:"Error while fetching logs",
-            error:err.message
+            message: "Error while fetching logs",
+            error: err.message
         })
     }
 }
 
-module.exports = { wcCreate, getMyWorkspaces, deleteWorkspace, getWs, getActivityLogs}
+
+async function team(req, res) {
+
+    try {
+        const { workspaceId } = req.params
+
+        const teamMember = await wsUserModel.find({
+            workspaceId
+        }).populate("userId")
+
+        if (teamMember === 0) {
+            return res.status(200).json({ message: "Team members are not present in collection",  teamMember:[] })
+        }
+
+        return res.status(200).json({
+            message: "Member fetched successfully",
+            teamMember
+        })
+    } catch (err) {
+        return res.status(500).json({
+            message: "error while fetching members from workspace",
+            error: err.message
+        })
+    }
+
+
+}
+
+module.exports = { wcCreate, getMyWorkspaces, deleteWorkspace, getWs, getActivityLogs, team }

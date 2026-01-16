@@ -40,7 +40,7 @@ export const UserProvider = ({ children }) => {
 
         try {
             const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/notifications`, { withCredentials: true })
-            console.log(res.data.notifications)
+            // console.log("res",res.data.notifications)
             setNotifications(res.data.notifications)
 
         } catch (err) {

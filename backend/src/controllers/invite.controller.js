@@ -44,7 +44,7 @@ async function sendInvite(req, res) {
         const io = req.app.get("io")
         io.to(invitedUser._id.toString()).emit("notification", {
             type: "Invite",
-            message: `You have been invited to join the workspace ${workspace.name} by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`,
+            message: `You have been invited to join the workspace:${workspace.name} as role ${role} by -${req.user.fullName.firstName} ${req.user.fullName.lastName}`,
             token
         })
 
@@ -52,7 +52,7 @@ async function sendInvite(req, res) {
         await logModel.create({
             workspaceId,
             actor: req.user._id,
-            message: `Invitation is sended to ${email} by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
+            message: `sended invitiation to ${email} `
         })
 
 
@@ -125,6 +125,7 @@ async function acceptInvite(req, res) {
                 isRead: false
             }, { $set: { isRead: true } });
 
+
             return res.status(200).json({ message: "Workspace role update successfully" })
         }
 
@@ -147,12 +148,13 @@ async function acceptInvite(req, res) {
         await logModel.create({
             workspaceId: invite.workspaceId,
             actor: req.user._id,
-            message: `Invitation is accepted by ${userEmail}`
+            message: "accepted invitation"
         })
 
         const io = req.app.get("io")
 
         io.to(userId.toString()).emit("workspaceAdded")
+        io.to(userId.toString()).emit("roleChanged")
 
         return res.status(201).json({
             message: "Invitation accepted successfully",
@@ -178,6 +180,10 @@ async function getNotification(req, res) {
             userId,
             isRead: false
         }).sort({ createdAt: -1 })
+
+        if(notifications.length === 0){
+            return res.status(200).json({message:"Notifications not found", notifications:[]})
+        }
 
         return res.status(200).json({
             message: "Notifications fetched successfully",

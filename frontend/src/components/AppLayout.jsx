@@ -10,7 +10,7 @@ const AppLayout = () => {
 
   return (
 
-    loading ? ("loading...") : (
+    loading ? (<p className='text-center mt-10'>"loading..."</p>) : (
 
       <div className='min-h-screen flex flex-col '>
 

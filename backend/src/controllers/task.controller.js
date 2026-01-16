@@ -22,7 +22,7 @@ async function taskCreate(req, res) {
         await logModel.create({
             workspaceId,
             actor: req.user._id,
-            message: `Task created by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
+            message: `created task ${title}`
         })
 
 
@@ -62,7 +62,7 @@ async function deleteTask(req, res) {
         await logModel.create({
             workspaceId,
             actor: req.user._id,
-            message: `Task deleted by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
+            message: `deleted task ${task.title}`
         })
 
         return res.status(200).json({ message: "Task deleted successfully" })
@@ -80,7 +80,6 @@ async function deleteTask(req, res) {
 async function updateTask(req, res) {
 
     try {
-        const { title, description, status } = req.body
         const { workspaceId, taskId } = req.params
 
         const workspace = await workspaceModel.findById(workspaceId)
@@ -93,7 +92,7 @@ async function updateTask(req, res) {
         const updatedTask = await taskModel.findOneAndUpdate({
             _id: taskId,
             workspaceId
-        }, req.body, { new: true })
+        }, {$set:req.body}, { new: true })
 
         if (!updatedTask) {
             return res.status(404).json({ message: "Task not found" })
@@ -102,7 +101,7 @@ async function updateTask(req, res) {
         await logModel.create({
             workspaceId,
             actor: req.user._id,
-            message: `Task updated by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
+            message: `updated task ${updatedTask.title}`
         })
 
         return res.status(200).json({
@@ -133,7 +132,7 @@ async function getTask(req, res) {
             _id: taskId
         })
 
-        if (task.length === 0) {
+        if (!task) {
             return res.status(404).json("Task not found")
         }
 
@@ -168,7 +167,7 @@ async function fetchTasks(req, res) {
         })
 
         if (tasks.length === 0) {
-            return res.status(404).json({ message: "Tasks not found" })
+            return res.status(200).json({ message: "Tasks are not present in a collection",tasks:[] })
         }
 
         return res.status(200).json({

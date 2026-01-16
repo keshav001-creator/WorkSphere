@@ -19,7 +19,7 @@ export const WorkspaceProvider = ({ children }) => {
           try {
 
             const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}`,{withCredentials:true})
-            console.log("res:",res.data.workspace)
+            // console.log("res:",res.data.workspace)
             setWorkspace(res.data.workspace)
             
 

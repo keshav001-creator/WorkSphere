@@ -13,7 +13,7 @@ const NotificationListener = () => {
 
         const handleNotification = (data) => {
             // console.log("New notification:", data)
-            setNotifications(prev=>[...prev,data])
+            setNotifications(prev=>[data,...prev])
         }
 
         socket.on("notification", handleNotification)

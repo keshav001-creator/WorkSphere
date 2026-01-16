@@ -6,7 +6,7 @@ const rbac=require("../middlewares/rbac.middleware")
 const router=express.Router()
 
 
-router.post("/workspaces/:workspaceId/invite",authUser,rbac(["Owner","Admin"]),controller.sendInvite)
+router.post("/workspaces/:workspaceId/invite",authUser,rbac(["Owner"]),controller.sendInvite)
 router.post("/invite/accept/:token",authUser,controller.acceptInvite)
 
 router.get("/notifications",authUser,controller.getNotification)

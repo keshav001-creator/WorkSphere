@@ -39,18 +39,18 @@ const CreateWorkspace = () => {
 
 
     return (
-        <div className="flex  text-center justify-center h-screen ">
+        <div className="flex  text-center justify-center h-screen  w-full">
 
 
             <div className="w-full p-3">
 
-                <div className='flex items-center justify-between'>
+                {/* <div className='flex items-center justify-between'>
                     <div className="flex items-center gap-x-1">
                         <MdWorkspacesFilled className='text-lg text-gray-400' />
                         <h1 className='font-bold  text-lg'>WorkSphere</h1>
                     </div>
                     <button onClick={() => navigate("/dashboard")}><RxCross2 /></button>
-                </div>
+                </div> */}
 
                 <form className="flex flex-col gap-y-3 mt-20 p-4"
                     onSubmit={handleSubmit}>
@@ -84,12 +84,12 @@ const CreateWorkspace = () => {
 
                     
 
-                    <div className="flex justify-end gap-x-3">
-                        <button className="bg-white text-black  px-2 py-1 rounded-sm border border-gray-300"
+                    <div className="flex justify-between gap-x-3">
+                        <button className="bg-white text-black  px-2 py-1 rounded-sm border border-gray-300 w-1/2"
                             onClick={() => navigate("/dashboard")}
                         >Cancel</button>
 
-                        <button className="bg-black text-white px-2 py-1 rounded-sm"
+                        <button className="bg-black text-white px-2 py-1 rounded-sm w-1/2"
                         onClick={()=>navigate("/dashboard")}
                         >Create</button>
                     </div>

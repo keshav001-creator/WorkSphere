@@ -124,7 +124,7 @@ const Profile = () => {
 
           <div className="flex flex-col">
             <label className="text-xs font-semibold mb-1">Email</label>
-            <input className="border border-gray-400 bg-gray-100 p-2 rounded-sm text-sm outline-none cursor-not-allowed"
+            <input className="border border-gray-200 bg-gray-100 p-2 rounded-sm text-sm outline-none cursor-not-allowed"
               required
               type="email"
               value={form.email}

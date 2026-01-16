@@ -22,7 +22,8 @@ async function createDoc(req, res) {
         await logModel.create({
                     workspaceId,
                     actor:req.user._id,
-                    message:`Document is created by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
+                    message:`created document ${title}` 
+                    // message:`Document is created by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
                 })
 
         return res.status(201).json({
@@ -53,6 +54,13 @@ async function docDelete(req, res) {
             return res.status(404).json({ message: "document does not exist" })
         }
 
+         await logModel.create({
+                    workspaceId,
+                    actor:req.user._id,
+                    message:`deleted document ${doc.title}` 
+                    // message:`Document is created by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
+                })
+
         return res.status(200).json({ message: "Document deleted successfully" })
     } catch (err) {
         return res.status(500).json({
@@ -68,11 +76,10 @@ async function updateDoc(req, res) {
     try {
         const { docId, workspaceId } = req.params
 
-
         const updatedDoc = await docModel.findOneAndUpdate({
             _id: docId,
             workspaceId
-        }, req.body, { new: true })
+        }, {$set:req.body}, { new: true })
 
         if (!updatedDoc) {
             return res.status(404).json({ message: "Document does not exist" })
@@ -81,7 +88,7 @@ async function updateDoc(req, res) {
          await logModel.create({
                     workspaceId,
                     actor:req.user._id,
-                    message:`Document is updated by ${req.user.fullName.firstName} ${req.user.fullName.lastName}`
+                    message:`updated document ${updatedDoc.title}`
                 })
 
         return res.status(200).json({
@@ -108,10 +115,10 @@ async function fetchDocs(req, res) {
             return res.status(404).json({ message: "Workspace Id not found" })
         }
 
-        const docs = await docModel.find({workspaceId})
+        const docs = await docModel.find({workspaceId}).populate("createdBy")
 
         if (docs.length === 0) {
-            return res.status(404).json({ message: "docs not found" })
+            return res.status(200).json({ message: "Documents are not present in collection", docs:[] })
         }
 
         return res.status(200).json({
@@ -184,7 +191,7 @@ async function getSummary(req,res){
         const cachedSummary=await redis.get(`Summary:${workspaceId}:${docId}`)
 
         if(cachedSummary){
-            return res.status(200).json({message:"Summary fetched successfully(cached)",summary:cachedSummary})
+            return res.status(200).json({message:"Summary fetched successfully(cached)",response:cachedSummary})
         }
 
         const prompt=`Summarize the following document clearly and concisely:

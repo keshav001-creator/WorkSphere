@@ -12,8 +12,29 @@ import socket from "../Socket";
 const Dashboard = () => {
 
   const [workspaces, setWorkspaces] = useState([])
+  const [loading, setLoading]=useState([])
   const [openMenuId ,setOpenMenuId]=useState(false)
   const navigate = useNavigate()
+
+
+   function timeAgo(dateString) {
+    const now = new Date()
+    const created = new Date(dateString)
+    const diffMs = now - created
+
+    const seconds = Math.floor(diffMs / 1000)
+    const minutes = Math.floor(seconds / 60)
+    const hours = Math.floor(minutes / 60)
+    const days = Math.floor(hours / 24)
+
+    if (seconds < 60) return "Just now"
+    if (minutes < 60) return `${minutes} min ago`
+    if (hours < 24) return `${hours} hr ago`
+    if (days === 1) return "Yesterday"
+    if (days < 7) return `${days} days ago`
+
+    return created.toLocaleDateString() 
+  }
 
 
   const handleDelete=async(workspaceId)=>{
@@ -35,12 +56,16 @@ const Dashboard = () => {
 
       try {
 
+        setLoading(true)
+
         const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces`, { withCredentials: true })
         console.log(res.data.workspaces)
         setWorkspaces(res.data.workspaces)
 
       } catch (err) {
         console.log(err)
+      }finally{
+        setLoading(false)
       }
     }
 
@@ -71,13 +96,19 @@ const Dashboard = () => {
       </div>
 
 
-
-      <div className="grid grid-cols-1 gap-4 mt-5">
+      {loading ? (
+        <p className="text-center mt-10">Loading...</p>
+      ):workspaces.length===0 ? (
+        <div className="text-gray-600 text-center mt-5">
+            <p className="font-semibold text-lg">No Workspace yet</p>
+            <p className="text-sm mt-1">Create Your first Workspace</p>
+          </div>
+      ): <div className="grid grid-cols-1 gap-4 mt-5">
 
         {workspaces.map(ws => (
 
-          <div className="flex flex-col bg-white p-4 border border-gray-200 rounded-lg"
-            key={ws.index}
+          <div className="flex flex-col bg-white p-4 border border-gray-300 rounded-lg shadow-sm"
+            key={ws._id}
             onClick={() => navigate(`/workspaces/${ws.workspaceId._id}`)}
 
           >
@@ -148,7 +179,7 @@ const Dashboard = () => {
             </div>
 
             <div className="text-xs text-gray-500 mt-5">
-              {`Created At:${ws.createdAt}`}
+              {`Created- ${timeAgo(ws.createdAt)}`}
             </div>
 
           </div>
@@ -157,6 +188,11 @@ const Dashboard = () => {
 
         
       </div>
+      }
+
+
+
+      
 
 
     </main>

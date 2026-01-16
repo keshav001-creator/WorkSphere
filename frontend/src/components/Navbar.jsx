@@ -6,8 +6,8 @@ import { FaArrowLeft } from "react-icons/fa";
 import { LuBell } from "react-icons/lu";
 import { RxCross2 } from "react-icons/rx";
 import axios from "../api/axios"
-import socket from "../Socket";
 import { VscBellDot } from "react-icons/vsc";
+import { GoDotFill } from "react-icons/go";
 
 
 const Navbar = () => {
@@ -41,6 +41,24 @@ const Navbar = () => {
 
 
 
+  function timeAgo(dateString) {
+    const now = new Date()
+    const created = new Date(dateString)
+    const diffMs = now - created
+
+    const seconds = Math.floor(diffMs / 1000)
+    const minutes = Math.floor(seconds / 60)
+    const hours = Math.floor(minutes / 60)
+    const days = Math.floor(hours / 24)
+
+    if (seconds < 60) return "Just now"
+    if (minutes < 60) return `${minutes} min ago`
+    if (hours < 24) return `${hours} hr ago`
+    if (days === 1) return "Yesterday"
+    if (days < 7) return `${days} days ago`
+
+    return created.toLocaleDateString() 
+  }
 
 
 
@@ -85,8 +103,8 @@ const Navbar = () => {
 
             <div className="bg-white w-[95vw] h-[50vh] rounded-md flex flex-col">
 
-              <div className="flex justify-between border-b border-gray-400 p-3">
-                <div><h1>Notifications</h1></div>
+              <div className="flex justify-between border-b border-gray-300 p-3">
+                <div><h1 className="text-xl font-semibold">Notifications</h1></div>
                 <button onClick={() => setShowNotification(false)}><RxCross2 className="text-gray-500" /></button>
               </div>
 
@@ -97,10 +115,17 @@ const Navbar = () => {
                     notifications.map((n, i) => (
                       <div
                         key={i}
-                        className="p-3 mb-2 rounded-lg bg-gray-100 text-sm"
+                        className="p-3 mb-2 rounded-lg bg-blue-50 text-sm flex gap-x-1"
                       >
-                        <p> {n.message}</p>
-                        <p onClick={() => handleAccept(n.token)}>Click here to join</p>
+                        <div>
+                          <p> {n.message}</p>
+                          <p className="font-semibold underline"
+                            onClick={() => handleAccept(n.token)}>Click here to join</p>
+
+                          <p className="text-xs text-gray-500 mt-2">{timeAgo(n.createdAt)}</p>
+                        </div>
+
+                        <div className="text-blue-500"><GoDotFill /></div>
                       </div>
                     ))
                   ) : (
