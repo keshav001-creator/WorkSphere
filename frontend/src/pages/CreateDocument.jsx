@@ -54,10 +54,16 @@ const CreateDocument = () => {
                         onChange={(e)=>setContent(e.target.value)}
                     ></textarea>
 
-                    <button className=" px-2  py-1 w-full bg-gray-950 text-white mt-1 rounded-md"
+                    <div className="flex gap-x-1  mt-1">
+                        <button className="px-2  py-1 w-full bg-white border border-gray-400 rounded-md"
+                        type="button"
+                        onClick={()=>navigate(`/workspaces/${workspaceId}/documents`)}
+                        >Cancel</button>
+                        <button className=" px-2  py-1 w-full bg-gray-950 text-white rounded-md"
                         type="submit"
                         onClick={()=>navigate(`/workspaces/${workspaceId}/documents`)}
                         >Create Document</button>
+                    </div>
                 </form>
             </div>
         </div>

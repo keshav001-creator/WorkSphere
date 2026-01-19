@@ -27,6 +27,10 @@ async function wcCreate(req, res) {
             role: "Owner"
         })
 
+        const io = req.app.get("io")
+
+        io.to(userId.toString()).emit("workspaceAdded")
+
         return res.status(201).json({
             message: "workspace created successfully",
             workspace,
@@ -49,7 +53,7 @@ async function getMyWorkspaces(req, res) {
 
         const workspaces = await wsUserModel.find({
             userId
-        }).populate("workspaceId")
+        }).sort({createdAt:-1}).populate("workspaceId")
 
         if (workspaces.length === 0) {
             return res.status(200).json({ message: "Workspaces are not present in collection", workspaces:[] })

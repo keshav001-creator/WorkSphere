@@ -13,7 +13,6 @@ const CreateWorkspace = () => {
     const [description, setDescription] = useState("")
     const navigate = useNavigate()
 
-    const [icon, setIcon] = useState("");
 
 
 
@@ -25,7 +24,6 @@ const CreateWorkspace = () => {
             const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/workspace`, {
                 name,
                 description,
-                icon
             }, { withCredentials: true }
             )
 

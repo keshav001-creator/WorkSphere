@@ -1,21 +1,44 @@
 const taskModel = require("../models/task.model")
 const workspaceModel = require("../models/workspace.model")
 const wsUserModel = require("../models/wsUser.model")
-const logModel=require("../models/activitylog")
+const logModel = require("../models/activitylog")
+const userModel = require("../models/user.model")
 
 async function taskCreate(req, res) {
 
     try {
-        const { title, description, status } = req.body
+        const { title, description, status, assignToMember, priority } = req.body
         const { workspaceId } = req.params
         const userId = req.user._id
 
 
+        const user = await userModel.findOne({
+            email: assignToMember
+        })
+
+        if (!user) {
+            return res.status(404).json({ message: "User not exists" })
+        }
+
+
+        //present in workspace
+        const ValidUser = await wsUserModel.findOne({
+            userId: user._id,
+            workspaceId
+        })
+
+        if (!ValidUser) {
+            return res.status(404).json({ message: "User do not exists in this workspace" })
+        }
+
+
         const task = await taskModel.create({
+            workspaceId,
             title,
             description,
             status,
-            workspaceId,
+            assignTo: user._id,
+            priority,
             createdBy: userId
         })
 
@@ -24,6 +47,7 @@ async function taskCreate(req, res) {
             actor: req.user._id,
             message: `created task ${title}`
         })
+
 
 
         return res.status(201).json({
@@ -43,12 +67,6 @@ async function deleteTask(req, res) {
 
     try {
         const { workspaceId, taskId } = req.params
-
-        const workspace = await workspaceModel.findById(workspaceId)
-
-        if (!workspace) {
-            return res.status(400).json({ message: "WorkspaceId is not there" })
-        }
 
         const task = await taskModel.findOneAndDelete({
             _id: taskId,
@@ -81,18 +99,40 @@ async function updateTask(req, res) {
 
     try {
         const { workspaceId, taskId } = req.params
+        const { assignToMember, ...rest } = req.body
 
-        const workspace = await workspaceModel.findById(workspaceId)
+        let updateData = { ...rest }
 
-        if (!workspace) {
-            return res.status(400).json({ message: "WorkspaceId is not there" })
+        if (assignToMember !== undefined) {
+
+
+            const user = await userModel.findOne({
+                email: assignToMember
+            })
+
+            if (!user) {
+                return res.status(404).json({ message: "User not exists" })
+            }
+
+
+            //present in workspace
+            const ValidUser = await wsUserModel.findOne({
+                userId: user._id,
+                workspaceId
+            })
+
+            if (!ValidUser) {
+                return res.status(404).json({ message: "User do not exists in this workspace" })
+            }
+
+            updateData.assignTo = user._id
         }
 
 
         const updatedTask = await taskModel.findOneAndUpdate({
             _id: taskId,
             workspaceId
-        }, {$set:req.body}, { new: true })
+        }, { $set: updateData }, { new: true })
 
         if (!updatedTask) {
             return res.status(404).json({ message: "Task not found" })
@@ -121,16 +161,10 @@ async function getTask(req, res) {
     try {
         const { workspaceId, taskId } = req.params
 
-        const workspace = await workspaceModel.findById(workspaceId)
-
-        if (!workspace) {
-            return res.status(400).json({ message: "WorkspaceId is not there" })
-        }
-
         const task = await taskModel.findOne({
             workspaceId,
             _id: taskId
-        })
+        }).populate("assignTo")
 
         if (!task) {
             return res.status(404).json("Task not found")
@@ -164,10 +198,10 @@ async function fetchTasks(req, res) {
 
         const tasks = await taskModel.find({
             workspaceId
-        })
+        }).sort({ createdAt: -1 })
 
         if (tasks.length === 0) {
-            return res.status(200).json({ message: "Tasks are not present in a collection",tasks:[] })
+            return res.status(200).json({ message: "Tasks are not present in a collection", tasks: [] })
         }
 
         return res.status(200).json({

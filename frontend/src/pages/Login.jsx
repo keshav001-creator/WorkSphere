@@ -60,7 +60,7 @@ const Login = () => {
           <button onClick={()=>navigate("/")}><RxCross2 /></button>
         </div>
         
-        <form className="flex flex-col gap-y-3 mt-20"
+        <form className="flex flex-col gap-y-3 mt-20 p-4"
           onSubmit={handleLoginSubmit}>
 
           <div className="mb-1">

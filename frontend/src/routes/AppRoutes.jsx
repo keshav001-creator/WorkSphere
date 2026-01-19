@@ -14,6 +14,7 @@ import Profile from "../pages/Profile"
 import CreateWorkspace from "../pages/CreateWorkspace"
 import ViewDoc from "../pages/ViewDoc"
 import CreateDocument from "../pages/CreateDocument"
+import ViewTask from "../pages/ViewTask"
 
 const AppRoutes = () => {
   return (
@@ -29,6 +30,7 @@ const AppRoutes = () => {
         <Route path="/createWorkspace" element={<CreateWorkspace />}></Route>
         <Route path="/workspaces/:workspaceId/documents/:docId" element={<ViewDoc />}></Route>
         <Route path="/workspaces/:workspaceId/documents/createDocument" element={<CreateDocument/>}></Route>
+        <Route path="/workspaces/:workspaceId/:taskId/Viewtask" element={<ViewTask/>}></Route>
 
         <Route path="/workspaces/:workspaceId"
           element={<WorkspaceProvider>

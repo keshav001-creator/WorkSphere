@@ -126,51 +126,7 @@ const Documents = () => {
 
         )}
 
-        {/* <div className="p-2  grid grid-cols-1">
-          {document?.length ? (
-            document.map(doc =>
-              <div className="border mt-5 border-gray-200 rounded-md shadow-sm  px-2 py-4 bg-white "
-                onClick={() => navigate(`/workspaces/${workspaceId}/documents/${doc._id}`)}
-                key={doc._id}>
-
-                <div className="flex gap-x-3 shrink-0">
-                  <div>
-                    <CgFileDocument className="text-lg text-gray-500" />
-                  </div>
-
-                  <div className="flex-1">
-                    <h1 className="font-semibold">{doc.title}</h1>
-                    <p className="line-clamp-2 break-word break-all text-gray-600 text-sm font-semibold overflow-hidden">{doc.content}</p>
-                    <div className="flex  mt-3 items-center text-xs text-gray-500 gap-x-2">
-                      <RxPerson />
-                      <p className=""> {doc.createdBy.fullName.firstName} {doc.createdBy.fullName.lastName}</p>
-
-                    </div>
-
-                    <div className="flex justify-between">
-                      <div className="text-xs text-gray-500 flex gap-x-2 items-center">
-                        <LuClock />
-                        <p className="">{doc.updatedAt}</p>
-                      </div>
-
-                    </div>
-
-
-                  </div>
-                  <button className="shrink-0 flex items-end"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setDeleteId(doc._id)
-                      setShowConfirm(true)
-                      
-                    }}
-                  ><RiDeleteBinLine className="text-red-700 text-md" /></button>
-                </div>
-
-              </div>
-            )
-          ) : <p className="text-center mt-10">Loading...</p>}
-        </div> */}
+        
 
 
 
