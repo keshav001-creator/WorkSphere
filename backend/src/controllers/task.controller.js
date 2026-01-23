@@ -177,7 +177,7 @@ async function getTask(req, res) {
 
     } catch (err) {
         return res.status(500).json({
-            message: "Error while getting task",
+            message: "Error while getting task details",
             error: err.message
         })
     }

@@ -84,8 +84,6 @@ const ViewDoc = () => {
     return (
         <div className='px-4 py-2  flex flex-col w-full'>
 
-
-
             <div className='w-full mt-3'>
                 <form className=''
                     onSubmit={handleSubmit}>

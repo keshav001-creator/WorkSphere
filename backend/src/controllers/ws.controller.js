@@ -65,7 +65,7 @@ async function getMyWorkspaces(req, res) {
 
     } catch (err) {
         return res.status(500).json({
-            message: "Error while fetching workspace",
+            message: "Error while fetching workspaces",
             error: err.message
         })
     }

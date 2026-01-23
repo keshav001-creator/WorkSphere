@@ -8,6 +8,12 @@ const Task = () => {
   const { workspaceId } = useParams()
 
 
+  const [submit, setSubmit] = useState(false)
+  const [createError, setCreateError] = useState(null)
+  const [deleteError, setDeleteError] = useState(null)
+  const [fetchError, setFetchError] = useState(null)
+
+
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(false)
   const [showForm, setShowForm] = useState(false)
@@ -24,12 +30,14 @@ const Task = () => {
 
   const fetchTasks = async () => {
     try {
+      setFetchError(null)
       setLoading(true)
       const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/tasks`, { withCredentials: true })
       console.log(res)
       setTasks(res.data.tasks)
     } catch (err) {
       console.log(err)
+      setFetchError(err.response?.data?.message || "Failed to fetch tasks")
     } finally {
       setLoading(false)
     }
@@ -43,6 +51,8 @@ const Task = () => {
     e.preventDefault()
 
     try {
+
+      setSubmit(true)
       const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/task`, {
         title,
         description,
@@ -59,11 +69,14 @@ const Task = () => {
       setAssign("")
       setPriority("High")
 
+      setShowForm(false)
 
     } catch (err) {
       console.log(err)
+      setCreateError(err.response?.data?.message || "Failed to create task")
+
     } finally {
-      setShowForm(false)
+      setSubmit(false)
     }
   }
 
@@ -76,9 +89,12 @@ const Task = () => {
       setTasks(prev => prev.filter(task => task._id !== taskId))
 
 
+      setShowConfirm(false)
 
     } catch (err) {
       console.log(err)
+      setDeleteError(err.response?.data?.message || "Failed to delete")
+
     }
 
   }
@@ -87,18 +103,25 @@ const Task = () => {
   return (
     <div className='p-5  min-h-full w-full bg-gray-50'>
 
-      <div className={showForm ? "pointer-events-none select-none" : ""}>
+      <div className={showForm || showConfirm ? "pointer-events-none select-none" : ""}>
 
         <div>
           <h1 className="text-xl font-semibold">Tasks</h1>
           <button className="w-full bg-gray-950 text-white p-2 rounded-md mt-2"
-            onClick={() => setShowForm(true)}
+            onClick={() => {
+              setShowForm(true)
+              setCreateError(null)
+            }}
           >+ New Task</button>
         </div>
 
+        {fetchError && (
+          <p className="text-red-600 text-xs mt-5 text-center">{fetchError}</p>
+        )}
+
         {loading ? (
           <p className="text-center mt-10">Loading...</p>
-        ) : tasks.length === 0 ?
+        ) : tasks.length === 0 && !fetchError ?
           <div className="text-gray-600 text-center mt-5">
             <p className="font-semibold text-lg">No Tasks yet</p>
             <p className="text-sm mt-1">Create Your first Task</p>
@@ -114,6 +137,7 @@ const Task = () => {
                     e.stopPropagation()
                     setShowConfirm(true)
                     setDeleteId(task._id)
+                    setDeleteError(null)
                   }}><RiDeleteBinLine className="text-red-700" /></button>
                 </div>
 
@@ -125,8 +149,6 @@ const Task = () => {
 
                   <h1 className="bg-red-50 border border-red-300 inline-block px-2 py-0.5 rounded-lg text-xs text-red-600">{task.priority}</h1>
                 </div>
-
-
               </div>
             ))}
           </div>
@@ -136,15 +158,22 @@ const Task = () => {
       {showConfirm && (
         <div className="fixed inset-0 z-30 bg-black/40 flex justify-center items-center">
 
-          <div className="bg-white p-4 rounded-md w-60">
+          <div className="bg-white p-4 rounded-md w-60 min-h-50vh">
             <h2 className="font-semibold text-lg">Delete Document</h2>
             <p className="text-sm text-gray-600 mt-2">
               This action cannot be undone.
             </p>
 
+            {deleteError && (
+              <p className="text-red-600 text-xs text-center mt-4">{deleteError}</p>
+            )}
+
             <div className="flex justify-end gap-2 mt-4 w-full">
               <button
-                onClick={() => setShowConfirm(false)}
+                onClick={() => {
+                  setShowConfirm(false)
+                  setDeleteError(null)
+                }}
                 className="px-3 py-1 border rounded-md w-1/2 "
               >
                 Cancel
@@ -153,7 +182,6 @@ const Task = () => {
               <button
                 onClick={() => {
                   handleDelete(deleteId)
-                  setShowConfirm(false)
                 }}
                 className="px-3 py-1 bg-red-600 text-white rounded-md w-1/2"
               >
@@ -181,6 +209,7 @@ const Task = () => {
                 <input className='w-full text-sm outline-none bg-white border px-2 py-1 border-gray-300 rounded-lg mb-2'
                   placeholder='title'
                   type="text"
+                  disabled={submit}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 ></input>
@@ -192,6 +221,7 @@ const Task = () => {
                   className="w-full text-sm outline-none bg-white border px-2 py-1 border-gray-300 rounded-lg"
                   placeholder='brief description about task'
                   type="text"
+                  disabled={submit}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 ></textarea>
@@ -202,6 +232,7 @@ const Task = () => {
 
                 <select className="text-sm px-2 py-1 bg-gray-100 rounded-md border border-gray-300 "
                   value={status}
+                  disabled={submit}
                   onChange={(e) => setStatus(e.target.value)}>
                   <option value="Todo">Todo</option>
                   <option value="In Progress">In Progress</option>
@@ -215,6 +246,7 @@ const Task = () => {
 
                 <select className="text-sm px-2 py-1 bg-gray-100 rounded-md border border-gray-300"
                   value={priority}
+                  disabled={submit}
                   onChange={(e) => setPriority(e.target.value)}>
                   <option value="High">High</option>
                   <option value="Moderate">Moderate</option>
@@ -230,20 +262,28 @@ const Task = () => {
                   placeholder='assign to email'
                   type="text"
                   value={assign}
+                  disabled={submit}
                   onChange={(e) => setAssign(e.target.value)}
                 ></input>
               </div>
 
-
+              {createError && (
+                <p className="text-red-500 mt-2 text-xs text-center">{createError}</p>
+              )}
 
               <div className="flex gap-x-1  mt-1">
                 <button className="px-2  py-1 w-full bg-white border border-gray-400 rounded-md"
                   type="button"
-                  onClick={() => setShowForm(false)}
+                  onClick={() => {
+                    setShowForm(false)
+                    setCreateError(null)
+                  }}
                 >Cancel</button>
                 <button className=" px-2  py-1 w-full bg-gray-950 text-white rounded-md"
                   type="submit"
-                >Create Task</button>
+                >
+                  {submit ? "Creating task..." : "Create Task"}
+                </button>
               </div>
             </form>
           </div>

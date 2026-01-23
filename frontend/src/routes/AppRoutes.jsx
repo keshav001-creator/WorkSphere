@@ -11,7 +11,6 @@ import Activity from "../pages/Activity"
 import WorkspaceLayout from '../components/WorkspaceLayout'
 import { WorkspaceProvider } from '../context/WorkspaceContext'
 import Profile from "../pages/Profile"
-import CreateWorkspace from "../pages/CreateWorkspace"
 import ViewDoc from "../pages/ViewDoc"
 import CreateDocument from "../pages/CreateDocument"
 import ViewTask from "../pages/ViewTask"
@@ -27,7 +26,6 @@ const AppRoutes = () => {
 
       <Route element={<AppLayout />}>
         <Route path="/dashboard" element={<Dashboard />}></Route>
-        <Route path="/createWorkspace" element={<CreateWorkspace />}></Route>
         <Route path="/workspaces/:workspaceId/documents/:docId" element={<ViewDoc />}></Route>
         <Route path="/workspaces/:workspaceId/documents/createDocument" element={<CreateDocument/>}></Route>
         <Route path="/workspaces/:workspaceId/:taskId/Viewtask" element={<ViewTask/>}></Route>

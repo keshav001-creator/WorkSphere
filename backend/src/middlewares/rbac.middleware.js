@@ -23,7 +23,7 @@ function rbac(allowedRoles = []) {
             }
 
             if(allowedRoles.length>0 && !allowedRoles.includes(member.role)){
-                return res.status(403).json({message:"insufficient permission"})
+                return res.status(403).json({message:"Insufficient permission"})
             }
 
             req.workspaceMember=member
