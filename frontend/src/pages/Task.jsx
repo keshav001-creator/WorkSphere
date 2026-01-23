@@ -11,9 +11,9 @@ const Task = () => {
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(false)
   const [showForm, setShowForm] = useState(false)
-  const [showConfirm,setShowConfirm]=useState(false)
-  const [deleteId,setDeleteId]=useState(null)
-  const navigate=useNavigate()
+  const [showConfirm, setShowConfirm] = useState(false)
+  const [deleteId, setDeleteId] = useState(null)
+  const navigate = useNavigate()
 
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
@@ -51,7 +51,7 @@ const Task = () => {
         priority
       }, { withCredentials: true })
 
-      setTasks(prev=>[res.data.task,...prev])
+      setTasks(prev => [res.data.task, ...prev])
 
       setTitle("")
       setDescription("")
@@ -73,7 +73,7 @@ const Task = () => {
       const res = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/task/${taskId}`, { withCredentials: true })
       console.log(res)
 
-      setTasks(prev=>prev.filter(task=>task._id !== taskId))
+      setTasks(prev => prev.filter(task => task._id !== taskId))
 
 
 
@@ -107,7 +107,7 @@ const Task = () => {
             {tasks.map(task => (
               <div className={`flex flex-col border border-gray-300 px-2 py-4 rounded-lg ${task.status === "Todo" ? "bg-gray-50" : task.status === "In Progress" ? "bg-blue-50" : "bg-green-50"}`}
                 key={task._id}
-                onClick={()=>navigate(`/workspaces/${workspaceId}/${task._id}/Viewtask`)}>
+                onClick={() => navigate(`/workspaces/${workspaceId}/${task._id}/Viewtask`)}>
                 <div className="mb-2 flex justify-between">
                   <h1 className="text-sm">{task.status}</h1>
                   <button onClick={(e) => {
@@ -151,7 +151,10 @@ const Task = () => {
               </button>
 
               <button
-                onClick={() => handleDelete(deleteId)}
+                onClick={() => {
+                  handleDelete(deleteId)
+                  setShowConfirm(false)
+                }}
                 className="px-3 py-1 bg-red-600 text-white rounded-md w-1/2"
               >
                 Delete
@@ -161,7 +164,6 @@ const Task = () => {
 
         </div>
       )
-
       }
 
       {showForm && (
