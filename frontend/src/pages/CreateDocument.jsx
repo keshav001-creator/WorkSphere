@@ -6,6 +6,8 @@ import { useParams, useNavigate} from "react-router-dom"
 const CreateDocument = () => {
 
     const {workspaceId}=useParams()
+    const [submit,setSubmit]=useState(false)
+    const [submitError,setSubmitError]=useState(null)
 
     const [title,setTitle]=useState("")
     const [content,setContent]=useState("")
@@ -16,14 +18,20 @@ const CreateDocument = () => {
         e.preventDefault()
 
         try{
+            setSubmit(true)
+            setSubmitError(null)
             const res=await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/documents`,{
                 title,
                 content
             },{withCredentials:true})
 
             console.log(res)
+            navigate(`/workspaces/${workspaceId}/documents`)
         }catch(err){
             console.log(err)
+            setSubmitError(err.response?.data?.message || "Failed to submit")
+        }finally{
+            setSubmit(false)
         }
 
     }
@@ -54,6 +62,10 @@ const CreateDocument = () => {
                         onChange={(e)=>setContent(e.target.value)}
                     ></textarea>
 
+                    {submitError && (
+                        <p className="text-red-600 mt-2 text-xs text-center mb-2">{submitError}</p>
+                    )}
+
                     <div className="flex gap-x-1  mt-1">
                         <button className="px-2  py-1 w-full bg-white border border-gray-400 rounded-md"
                         type="button"
@@ -61,8 +73,9 @@ const CreateDocument = () => {
                         >Cancel</button>
                         <button className=" px-2  py-1 w-full bg-gray-950 text-white rounded-md"
                         type="submit"
-                        onClick={()=>navigate(`/workspaces/${workspaceId}/documents`)}
-                        >Create Document</button>
+                        >
+                            {submit ? "Creating..." : "Create"}
+                        </button>
                     </div>
                 </form>
             </div>

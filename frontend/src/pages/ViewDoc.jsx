@@ -11,6 +11,10 @@ const ViewDoc = () => {
         content: ""
     })
     const navigate = useNavigate()
+    const [submitting, setSubmitting] = useState(false)
+    const [submitError, setSubmitError] = useState(null)
+    const [summaryError, setSummaryError] = useState(null)
+    const [fetchError, setFetchError] = useState(null)
 
     const [isLoading, setIsLoading] = useState(false)
     const [AISummary, setAISummary] = useState("")
@@ -21,11 +25,12 @@ const ViewDoc = () => {
 
     const fetchDocument = async () => {
         try {
-
+            setFetchError(null)
             const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/documents/${docId}`, { withCredentials: true })
             setDocument(res.data.document)
         } catch (err) {
             console.log(err)
+            setFetchError(err.response?.data?.message || "Failed to get details of document.Try again later!")
         }
     }
 
@@ -50,15 +55,20 @@ const ViewDoc = () => {
 
         e.preventDefault()
         try {
-
+            setSubmitError(null)
+            setSubmitting(true)
             const res = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/documents/${docId}`, {
                 title: document.title,
                 content: document.content
             }, { withCredentials: true })
             console.log(res)
+            navigate(`/workspaces/${workspaceId}/documents`)
 
         } catch (err) {
             console.log(err)
+            setSubmitError(err.response?.data?.message || "Failed to Update")
+        } finally {
+            setSubmitting(false)
         }
     }
 
@@ -68,12 +78,14 @@ const ViewDoc = () => {
         setIsLoading(true)
 
         try {
+            setSummaryError(null)
             const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/documents/${docId}/summary`, { withCredentials: true })
             console.log(res)
             setAISummary(res.data.response)
 
         } catch (err) {
             console.log(err)
+            setSummaryError(err.response?.data?.message || "Failed to get Summary.Try again later!")
         } finally {
             setIsLoading(false)
         }
@@ -85,54 +97,66 @@ const ViewDoc = () => {
         <div className='px-4 py-2  flex flex-col w-full'>
 
             <div className='w-full mt-3'>
-                <form className=''
-                    onSubmit={handleSubmit}>
-                    <div className='flex px-2 mb-3 justify-between'>
-                        <input className='w-1/2 outline-none text-xl'
-                            placeholder='title'
-                            value={document.title}
-                            name="title"
-                            type="text"
-                            onChange={handleChange}
-                        ></input>
+                {fetchError ? <p className='text-red-600 text-center mt-5'>{fetchError}</p> :
 
-                        <button className=" font-semibold  text-purple-700 text-sm flex border border-purple-300 w-1/2 rounded-md px-2 py-1 justify-center "
-                            type="button"
-                            onClick={getSummary}>
-                            <WiStars className="text-xl" />{isLoading ? "Summarizing..." : "AI Summarize"}</button>
+                    <form className=''
+                        onSubmit={handleSubmit}>
+                        <div className='flex px-2 mb-3 justify-between'>
+                            <input className='w-1/2 outline-none text-xl'
+                                placeholder='title'
+                                value={document.title}
+                                name="title"
+                                type="text"
+                                onChange={handleChange}
+                            ></input>
 
-                    </div>
+                            <button className=" font-semibold  text-purple-700 text-sm flex border border-purple-300 w-1/2 rounded-md px-2 py-1 justify-center "
+                                type="button"
+                                onClick={getSummary}>
+                                <WiStars className="text-xl" />{isLoading ? "Summarizing..." : "AI Summarize"}</button>
 
-                    {AISummary && (
-                        <div className="mt-3 p-3 border border-purple-200 bg-purple-50 rounded-md mb-3">
-                            <p className="text-sm text-gray-700">
-                                <span className="font-semibold">Summary:</span> {AISummary}
-                            </p>
                         </div>
-                    )}
 
-                    <textarea
-                        className="w-full outline-none h-[60vh] bg-white border-2 p-2 border-gray-300 rounded-lg"
-                        placeholder='content'
-                        name="content"
-                        type="text"
-                        value={document.content}
-                        onChange={handleChange}
-                    ></textarea>
+                        {AISummary && (
+                            <div className="mt-3 p-3 border border-purple-200 bg-purple-50 rounded-md mb-3">
+                                <p className="text-sm text-gray-700">
+                                    <span className="font-semibold">Summary:</span> {AISummary}
+                                </p>
+                            </div>
+                        )}
 
 
-                    <div className='flex gap-x-2'>
-                        <button className="border  px-2  py-1 rounded-sm w-full border-gray-300 mt-1"
-                            type="button"
-                            onClick={() => navigate(`/workspaces/${workspaceId}/documents`)}
-                        >Cancel</button>
+                        {summaryError && (
+                            <p className='text-red-600 text-xs text-center mb-2'>{summaryError}</p>
+                        )}
 
-                        <button className="border  px-2  py-1 rounded-sm w-full border-gray-300 mt-1"
-                            type="submit"
-                            onClick={() => navigate(`/workspaces/${workspaceId}/documents`)}
-                        >Save Changes</button>
-                    </div>
-                </form>
+                        <textarea
+                            className="w-full outline-none h-[60vh] bg-white border-2 p-2 border-gray-300 rounded-lg"
+                            placeholder='content'
+                            name="content"
+                            type="text"
+                            value={document.content}
+                            onChange={handleChange}
+                        ></textarea>
+
+                        {submitError && (
+                            <p className='text-red-600 text-xs text-center mt-2 mb-1'>{submitError}</p>
+                        )}
+
+
+                        <div className='flex gap-x-2'>
+                            <button className="border  px-2  py-1 rounded-sm w-full border-gray-300 mt-1"
+                                type="button"
+                                onClick={() => navigate(`/workspaces/${workspaceId}/documents`)}
+                            >Cancel</button>
+
+                            <button className="border  px-2  py-1 rounded-sm w-full border-gray-300 mt-1"
+                                type="submit"
+                            >
+                                {submitting ? "Updating..." : "Save Changes"}
+                            </button>
+                        </div>
+                    </form>}
             </div>
 
 

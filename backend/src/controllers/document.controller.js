@@ -115,7 +115,7 @@ async function fetchDocs(req, res) {
             return res.status(404).json({ message: "Workspace Id not found" })
         }
 
-        const docs = await docModel.find({workspaceId}).populate("createdBy")
+        const docs = await docModel.find({workspaceId}).sort({createdAt:-1}).populate("createdBy")
 
         if (docs.length === 0) {
             return res.status(200).json({ message: "Documents are not present in collection", docs:[] })

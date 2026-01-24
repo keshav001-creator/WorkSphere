@@ -16,6 +16,10 @@ const Documents = () => {
   const [loading, setLoading] = useState(false)
   const [deleteId, setDeleteId] = useState(null)
 
+  const [deleting, setDeleting]=useState(false)
+  const [deleteError, setDeleteError] = useState(null)
+  const [fetchError, setFetchError]=useState(null)
+
 
   const navigate = useNavigate()
 
@@ -25,12 +29,14 @@ const Documents = () => {
     try {
 
       setLoading(true)
+      setFetchError(null)
       const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/documents`, { withCredentials: true })
       setDocument(res.data.docs)
       // console.log(res.data.docs)
 
     } catch (err) {
       console.log(err)
+      setFetchError(err.response?.data?.message || "Failed to Fetch Documents. Try again!")
     } finally {
       setLoading(false)
     }
@@ -44,6 +50,7 @@ const Documents = () => {
 
   const confirmDelete = async () => {
     try {
+      setDeleting(true)
       await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/documents/${deleteId}`,
         { withCredentials: true }
       )
@@ -53,6 +60,9 @@ const Documents = () => {
 
     } catch (err) {
       console.log(err)
+      setDeleteError(err.response?.data?.message || "Failed to Delete")
+    }finally{
+      setDeleting(false)
     }
   }
 
@@ -70,10 +80,13 @@ const Documents = () => {
             onClick={() => navigate(`/workspaces/${workspaceId}/documents/createDocument`)}>+ New Document</button>
         </div>
 
+        {fetchError && (
+          <p className="text-red-600 text-xs text-center mt-5">{fetchError}</p>
+        )}
 
         {loading ? (
           <p className="text-center mt-10">Loading...</p>
-        ) : document.length === 0 ? (
+        ) : document.length === 0 && !fetchError  ? (
           <div className="text-gray-600 text-center mt-5">
             <p className="font-semibold text-lg">No Documents yet</p>
             <p className="text-sm mt-1">Create Your first Document</p>
@@ -97,7 +110,6 @@ const Documents = () => {
                     <div className="flex  mt-3 items-center text-xs text-gray-500 gap-x-2">
                       <RxPerson />
                       <p className=""> {doc.createdBy.fullName.firstName} {doc.createdBy.fullName.lastName}</p>
-
                     </div>
 
                     <div className="flex justify-between">
@@ -105,46 +117,41 @@ const Documents = () => {
                         <LuClock />
                         <p className="">{doc.updatedAt}</p>
                       </div>
-
                     </div>
-
-
                   </div>
                   <button className="shrink-0 flex items-end"
                     onClick={(e) => {
                       e.stopPropagation()
                       setDeleteId(doc._id)
+                      setDeleteError(null)
                       setShowConfirm(true)
-
                     }}
                   ><RiDeleteBinLine className="text-red-700 text-md" /></button>
                 </div>
-
               </div>
             )}
           </div>
-
         )}
-
-        
-
-
-
       </div>
-
-
 
       {showConfirm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white p-4 rounded-md w-60">
             <h2 className="font-semibold text-lg">Delete Document</h2>
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="text-sm text-gray-600 mt-2 mb-4">
               This action cannot be undone.
             </p>
 
-            <div className="flex justify-end gap-2 mt-4 w-full">
+            {deleteError && (
+              <p className="text-red-600 text-xs mb-2 text-center">{deleteError}</p>
+            )}
+
+            <div className="flex justify-end gap-2  w-full">
               <button
-                onClick={() => setShowConfirm(false)}
+                onClick={() => {
+                  setShowConfirm(false)
+                  setDeleteError(null)
+                }}
                 className="px-3 py-1 border rounded-md w-1/2 "
               >
                 Cancel
@@ -154,7 +161,7 @@ const Documents = () => {
                 onClick={() => confirmDelete(deleteId)}
                 className="px-3 py-1 bg-red-600 text-white rounded-md w-1/2"
               >
-                Delete
+                {deleting ? "Deleting..." : "Delete"}
               </button>
             </div>
           </div>
