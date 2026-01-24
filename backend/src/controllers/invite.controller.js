@@ -55,9 +55,6 @@ async function sendInvite(req, res) {
             message: `sended invitiation to ${email} `
         })
 
-
-
-
         return res.status(201).json({
             message: "Invite sent",
             inviteLink: `invite/accept/${token}`

@@ -12,12 +12,18 @@ import { UserContext } from "../context/UserContext";
 const Team = () => {
 
 
+  const { workspaceId } = useParams()
+  const { user } = useContext(UserContext)
+  
   const [team, setTeam] = useState([])
   const [showForm, setShowForm] = useState(false)
   const [Email, setEmail] = useState("")
   const [role, setRole] = useState("")
-  const { workspaceId } = useParams()
-  const { user } = useContext(UserContext)
+  const [loading, setLoading] = useState(false)
+  const [sending, setSending] = useState(false)
+
+  const [fetchError, setFetchError] = useState(null)
+  const [submitError, setSubmitError] = useState(null)
 
 
   function timeAgo(dateString) {
@@ -42,11 +48,16 @@ const Team = () => {
   const fetchTeamMembers = async () => {
 
     try {
+      setLoading(true)
+      setFetchError(null)
       const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/team`, { withCredentials: true })
 
       setTeam(res.data.teamMember)
     } catch (err) {
       console.log(err)
+      setFetchError(err.response?.data?.message || "Failed to get team members.Try again!")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -63,7 +74,8 @@ const Team = () => {
     e.preventDefault()
 
     try {
-
+      setSending(true)
+      setSubmitError(null)
       const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/invite`, {
         email: Email,
         role
@@ -71,9 +83,13 @@ const Team = () => {
       console.log(res)
       setEmail("")
       setRole("")
+      setShowForm(false)
 
     } catch (err) {
       console.log(err)
+      setSubmitError(err.response?.data?.message || "Failed to send Invite.Try again!")
+    } finally {
+      setSending(false)
     }
   }
 
@@ -92,36 +108,23 @@ const Team = () => {
 
           <div className='flex justify-center mt-5'>
             <button className='bg-gray-900 text-white py-2 rounded-md text-md w-full flex items-center justify-center gap-x-2'
-              onClick={() => setShowForm(true)}
+              onClick={() => {
+                setShowForm(true)
+                setSubmitError(null)
+              }}
             ><BsPersonPlus />Invite Member</button>
           </div>
 
         </div>
 
+        {fetchError && (
+          <p className="text-red-600 text-center text-xs mt-5">{fetchError}</p>
+        )}
 
-        <div className="border border-gray-300 flex flex-col p-2 gap-y-2 rounded-md mt-10 ">
-          <div className="p-3 flex items-center gap-x-1">
-            <FiShield className="text-lg" />
-            <h1 className="font-semibold text-center text-lg">Role Permissions</h1>
-          </div>
 
-          <div className="bg-white p-2 rounded-lg border border-gray-300">
-            <h1 className="font-semibold text-xs px-2 py-1 bg-gray-100 border border-gray-200 rounded-lg inline-block">Owner</h1>
-            <p className="text-xs text-gray-500 mt-1">Full workspace control, can delete workspace, invite members, and manage all settings.</p>
-          </div>
+        {loading ?
+          <p className="text-center mt-5 mb-5">Loading...</p> :
 
-          <div className="bg-white p-2 rounded-lg border border-gray-300 ">
-            <h1 className="font-semibold text-xs  px-2 py-1 bg-gray-100 border border-gray-200 rounded-lg inline-block">Admin</h1>
-            <p className="text-xs text-gray-500 mt-1" >Access to full workspace control, deleting workspace and inviting member is forbidden.</p>
-          </div>
-
-          <div className="bg-white p-2 rounded-lg border border-gray-300">
-            <h1 className="font-semibold text-xs  px-2 py-1 bg-gray-100 border border-gray-200 rounded-lg inline-block">Member</h1>
-            <p className="text-xs text-gray-500 mt-1">Read-only access to all workspace content.</p>
-          </div>
-        </div>
-
-        {team.length ? (
           <div className="border border-gray-200 mt-5 rounded-lg p-2 shadow-md">
 
             {team.map(member => (
@@ -160,21 +163,36 @@ const Team = () => {
 
             )}
           </div>
-        ) : <h1 className="text-center mt-10 ">"Loading Team Members..."</h1>
+
         }
 
+        <div className="border border-gray-300 flex flex-col p-2 gap-y-2 rounded-md mt-10 ">
+          <div className="p-3 flex items-center gap-x-1">
+            <FiShield className="text-lg" />
+            <h1 className="font-semibold text-center text-lg">Role Permissions</h1>
+          </div>
 
+          <div className="bg-white p-2 rounded-lg border border-gray-300">
+            <h1 className="font-semibold text-xs px-2 py-1 bg-gray-100 border border-gray-200 rounded-lg inline-block">Owner</h1>
+            <p className="text-xs text-gray-500 mt-1">Full workspace control, can delete workspace, invite members, and manage all settings.</p>
+          </div>
 
+          <div className="bg-white p-2 rounded-lg border border-gray-300 ">
+            <h1 className="font-semibold text-xs  px-2 py-1 bg-gray-100 border border-gray-200 rounded-lg inline-block">Admin</h1>
+            <p className="text-xs text-gray-500 mt-1" >Access to full workspace control, deleting workspace and inviting member is forbidden.</p>
+          </div>
 
-
+          <div className="bg-white p-2 rounded-lg border border-gray-300">
+            <h1 className="font-semibold text-xs  px-2 py-1 bg-gray-100 border border-gray-200 rounded-lg inline-block">Member</h1>
+            <p className="text-xs text-gray-500 mt-1">Read-only access to all workspace content.</p>
+          </div>
+        </div>
       </div>
 
       {showForm && (
         <div className="fixed inset-0 z-30  flex justify-center items-center bg-black/50">
 
           <div className="bg-white h-[95vh] w-[90vw] p-2 rounded-2xl">
-
-
 
             <form className="flex flex-col gap-y-3 flex-1"
               onSubmit={handleSubmit}
@@ -218,14 +236,23 @@ const Team = () => {
                 /><MdOutlineAdminPanelSettings /> Admin
               </label>
 
+              {submitError && (
+                <p className="text-red-600 text-center mt-2 text-xs">{submitError}</p>
+              )}
+
 
               <div className="flex justify-between items-center py-2 gap-x-3">
 
                 <button className="bg-white p-2 border border-gray-300 rounded-lg w-full"
-                  onClick={() => setShowForm(false)}
+                  onClick={() => {
+                    setShowForm(false)
+                    setSubmitError(null)
+                  }}
                 >Cancel</button>
                 <button className="bg-black text-white p-2  rounded-lg w-full"
-                >Send Invite</button>
+                >
+                  {sending ? "Sending..." : "Send Invite"}
+                </button>
 
               </div>
 

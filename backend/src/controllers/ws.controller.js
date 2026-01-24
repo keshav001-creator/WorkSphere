@@ -182,7 +182,7 @@ async function team(req, res) {
         })
     } catch (err) {
         return res.status(500).json({
-            message: "error while fetching members from workspace",
+            message: "Error while fecthing members of workspace",
             error: err.message
         })
     }
