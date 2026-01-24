@@ -8,6 +8,9 @@ const Profile = () => {
 
   const { user, setUser } = useContext(UserContext)
 
+  const [updating, setUpdating]=useState(false)
+  const [updateError,setUpdateError]=useState(null)
+  const [logoutError,setLogoutError]=useState(null)
 
   const navigate = useNavigate()
 
@@ -45,7 +48,8 @@ const Profile = () => {
     e.preventDefault()
 
     try {
-
+      setUpdating(true)
+      setUpdateError(null)
       const res = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/api/update`, {
 
         firstName: form.firstName,
@@ -55,9 +59,13 @@ const Profile = () => {
 
       console.log(res.data.updatedUser)
       setUser(res.data.updatedUser)
+      navigate("/dashboard")
 
     } catch (err) {
       console.log(err)
+      setUpdateError(err.response?.data?.message || "Failed to update")
+    }finally{
+      setUpdating(false)
     }
 
   }
@@ -65,29 +73,26 @@ const Profile = () => {
   const logoutHandler=async()=>{
 
     try{
-
+      setLogoutError(null)
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/logout`,{},{withCredentials:true})
       navigate("/")
 
     }catch(err){
       console.log(err)
+      setLogoutError(err.response?.data?.message || "Failed to Logout")
     }
 
   }
 
-
   return (
 
-
     <div className='min-h-screen bg-white'>
-
 
       <div className="flex items-center gap-x-2 border-b border-gray-300 p-2">
         <FaArrowLeft className="text-xs"
           onClick={() => navigate("/dashboard")} />
         <h1>Edit Profile</h1>
       </div>
-
 
       <div className="w-full p-4">
 
@@ -133,12 +138,19 @@ const Profile = () => {
             ></input>
           </div>
 
+          {updateError && (
+            <p className="text-red-600 text-center text-xs mt-2">{updateError}</p>
+          )}
 
+          {logoutError && (
+            <p className="text-red-600 text-center text-xs mt-2">{logoutError}</p>
+          )}
 
           {/* <button className="bg-white border border-gray-300 px-2 py-1 rounded-sm text-black">Cancel</button> */}
           <button className="bg-black p-2 rounded-sm text-sm text-white mt-3"
-          onClick={()=>navigate("/dashboard")}
-          >Update Profile</button>
+          >
+            {updating ? "Updating..." : "Update Profile"}
+          </button>
 
         </form>
 
@@ -147,11 +159,6 @@ const Profile = () => {
           >Log Out</button>
 
       </div>
-
-
-
-
-
 
     </div>
   )
