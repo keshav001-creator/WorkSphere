@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom"
 import Home from "../pages/Home"
 import Dashboard from '../pages/Dashboard'
 import Register from '../pages/Register'
-import Login from '../pages/Login'
 import AppLayout from '../components/AppLayout'
 import Task from "../pages/Task"
 import Team from "../pages/Team"
@@ -21,7 +20,6 @@ const AppRoutes = () => {
 
       <Route path="/" element={<Home />}></Route>
       <Route path="/register" element={<Register />}></Route>
-      <Route path="/login" element={<Login />}></Route>
       <Route path="/profile" element={<Profile />}></Route>
 
       <Route element={<AppLayout />}>

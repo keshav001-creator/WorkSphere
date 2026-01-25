@@ -4,8 +4,9 @@ import { RxCross2 } from "react-icons/rx";
 import { RiRobot3Line } from "react-icons/ri";
 import { CiTimer } from "react-icons/ci";
 import { MdOutlineSecurity } from "react-icons/md";
-import { MdWorkspacesFilled } from "react-icons/md";
-import { useEffect, useState } from "react"
+import { MdWorkspacesOutline } from "react-icons/md";
+import { useEffect, useState, useContext } from "react"
+import { UserContext } from "../context/UserContext";
 import { useNavigate, Link } from 'react-router-dom';
 import axios from "../api/axios";
 
@@ -17,85 +18,138 @@ const Home = () => {
 
   const navigate = useNavigate()
 
+  const { setUser, user, loading } = useContext(UserContext)
+
 
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [Email, setEmail] = useState("")
   const [Password, setPassword] = useState("")
 
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState(null)
+
   // const isMobile = window.innerWidth < 768
 
 
+  // useEffect(() => {
+
+  //   const checkAuth = async () => {
+
+  //     try {
+
+  //       const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/getme`, { withCredentials: true })
+
+  //       if (res.data.authenticated) {
+  //         navigate("/dashboard")
+  //       }
+
+  //     } catch (err) {
+  //       console.log(err)
+  //     }
+
+
+  //   }
+
+  //   checkAuth()
+
+  // }, [])
+
+  const handleAuthSubmit = async (e) => {
+    e.preventDefault()
+
+    
+    try {
+      setSubmitError(null)
+      setSubmitting(true)
+      let url = ""
+      let payload = {}
+
+      if (showRegister) {
+        url = "/api/register"
+        payload = {
+          fullName: { firstName, lastName },
+          email: Email,
+          password: Password
+        }
+      } else {
+        url = "/api/login"
+        payload = {
+          email: Email,
+          password: Password
+        }
+      }
+
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}${url}`,
+        payload,
+        { withCredentials: true }
+      )
+
+      setUser(res.data.User)
+
+      navigate("/dashboard")
+
+    } catch (err) {
+      setSubmitError(
+        err?.response?.data?.message || "Something went wrong"
+      )
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   useEffect(() => {
 
-    const checkAuth = async () => {
-
-    try{
-
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/getme`, { withCredentials: true })
-
-        if (res.data.authenticated) {
-          navigate("/dashboard")
-        }
-      
-    }catch(err){
-      console.log(err)
-    }
-
-
-    }
-
-    checkAuth()
-
-  }, [])
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    try {
-
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/register`, {
-        fullName: {
-          firstName,
-          lastName
-        },
-        email: Email,
-        password: Password
-      }, { withCredentials: true })
-
-      console.log(res)
-
+    if (user && !loading) {
       navigate("/dashboard")
-
-    } catch (err) {
-      console.log("error:", err)
     }
-  }
 
-  const handleLoginSubmit = async (e) => {
-    e.preventDefault()
-
-    try {
-
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/login`, {
-        email: Email,
-        password: Password
-      }, { withCredentials: true })
-
-      console.log(res)
-
-      navigate("/dashboard")
-
-    } catch (err) {
-      console.log("error:", err)
-    }
-  }
+  }, [user, loading])
 
 
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault()
 
+  //   try {
 
+  //     const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/register`, {
+  //       fullName: {
+  //         firstName,
+  //         lastName
+  //       },
+  //       email: Email,
+  //       password: Password
+  //     }, { withCredentials: true })
 
+  //     console.log(res)
+
+  //     navigate("/dashboard")
+
+  //   } catch (err) {
+  //     console.log("error:", err)
+  //   }
+  // }
+
+  // const handleLoginSubmit = async (e) => {
+  //   e.preventDefault()
+
+  //   try {
+
+  //     const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/login`, {
+  //       email: Email,
+  //       password: Password
+  //     }, { withCredentials: true })
+
+  //     console.log(res)
+
+  //     navigate("/dashboard")
+
+  //   } catch (err) {
+  //     console.log("error:", err)
+  //   }
+  // }
 
   return (
     <div className='relative min-h-screen '>
@@ -105,7 +159,7 @@ const Home = () => {
 
         <header className="nav sticky top-0 z-30 flex p-4 items-center justify-between  lg:p-4 bg-white lg:border-b border-gray-400">
           <div className='flex items-center gap-x-1 lg:gap-x-2'>
-            <MdWorkspacesFilled className='text-md text-gray-500 lg:text-3xl' />
+             <div className="bg-gray-800 rounded-lg p-1"> <MdWorkspacesOutline className='text-xl text-white lg:text-3xl' /></div>
             <h1 className='font-bold  text-lg lg:text-2xl'>WorkSphere</h1>
           </div>
 
@@ -114,11 +168,7 @@ const Home = () => {
             <a href="#how-it-works" className="hover:text-black font-semibold">How it works</a>
           </div>
           <button onClick={() => {
-            if (window.innerWidth < 768) {
-              navigate("/login")
-            } else {
-              setShowLogin(true)
-            }
+            setShowLogin(true)
           }}
             className='border font-md rounded-md px-2 py-1 text-sm text-black lg:px-8 lg:py-2 lg:mr-6 lg:font-semibold hover:bg-black hover:text-white transition'>
             Sign in</button>
@@ -177,16 +227,7 @@ const Home = () => {
                 Learn More </button>
             </div>
 
-
-
-
           </div>
-
-
-
-
-
-
         </section>
 
 
@@ -292,7 +333,10 @@ const Home = () => {
 
             {/* CLOSE */}
             <button
-              onClick={() => setShowRegister(false)}
+              onClick={() => {
+                setShowRegister(false)
+                setSubmitError(null)
+              }}
 
             >
               <RxCross2 className="absolute top-3 right-3 text-gray-400 hover:text-black" />
@@ -300,7 +344,7 @@ const Home = () => {
 
             {/* REGISTER FORM */}
             <form className="flex flex-col gap-y-3 mt-10"
-              onSubmit={handleSubmit}>
+              onSubmit={handleAuthSubmit}>
 
               <div className="mb-1 flex flex-col items-center">
                 <h1 className="text-2xl font-bold">Sign Up</h1>
@@ -312,6 +356,7 @@ const Home = () => {
                 required
                 type="text"
                 value={firstName}
+                disabled={submitting}
                 onChange={(e) => setFirstName(e.target.value)}
               />
 
@@ -321,6 +366,7 @@ const Home = () => {
                 required
                 type="text"
                 value={lastName}
+                disabled={submitting}
                 onChange={(e) => setLastName(e.target.value)}
               />
 
@@ -330,6 +376,7 @@ const Home = () => {
                 required
                 type="email"
                 value={Email}
+                disabled={submitting}
                 onChange={(e) => setEmail(e.target.value)}
               />
 
@@ -338,27 +385,27 @@ const Home = () => {
                 required
                 type="password"
                 value={Password}
+                disabled={submitting}
                 onChange={(e) => setPassword(e.target.value)}
               />
 
+              {submitError && (
+                <p className="text-xs text-center text-red-600 m-2">{submitError}</p>
+              )}
 
-              <button className="bg-black text-white p-2  rounded-lg">Create Account</button>
+
+              <button className="bg-black text-white p-2  rounded-lg" disabled={submitting}>{submitting ? "Please wait..." : "Create"}</button>
               <div className="text-sm">
                 <p>Already have an account?
                   <Link
                     onClick={() => {
-                      if (window.innerWidth < 768) {
-                        navigate("/login")
-                      } else {
-                        setShowRegister(false)
-                        setShowLogin(true)
-                      }
+                      setShowRegister(false)
+                      setShowLogin(true)
                     }}
                     className="text-blue-500 underline text-xs">Sign in</Link></p>
               </div>
 
             </form>
-
 
           </div>
         </div>
@@ -370,28 +417,32 @@ const Home = () => {
 
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
 
-          <div className=" relative w-full bg-white rounded-xl max-w-sm p-4 shadow-xl ">
+          <div className=" relative bg-white rounded-xl px-4 py-2 shadow-xl w-[90vw] min-h-[50vh]">
 
             <button
-              onClick={() => setShowLogin(false)}
+              onClick={() => {
+                setShowLogin(false)
+                setSubmitError(null)
+              }}
 
             >
               <RxCross2 className="absolute top-3 right-3 text-gray-400 hover:text-black" />
             </button>
 
-            <form className="flex flex-col gap-y-3 mt-10"
-              onSubmit={handleLoginSubmit}>
+            <div className="flex flex-col text-center mb-2">
+              <h1 className="text-2xl font-bold">Sign in</h1>
+              <p className="text-gray-600 text-sm">Login your Account</p>
+            </div>
 
-              <div className="mb-1 flex flex-col text-center">
-                <h1 className="text-2xl font-bold">Sign in</h1>
-                <p className="text-gray-600 text-sm">Login your Account</p>
-              </div>
+            <form className="flex flex-col gap-y-3 flex-1"
+              onSubmit={handleAuthSubmit}>
 
               <input className="text-sm p-2 bg-white border border-gray-400 outline-0 rounded"
                 placeholder='Email'
                 required
                 type="email"
                 value={Email}
+                disabled={submitting}
                 onChange={(e) => setEmail(e.target.value)}
               />
 
@@ -400,21 +451,26 @@ const Home = () => {
                 required
                 type="password"
                 value={Password}
+                disabled={submitting}
                 onChange={(e) => setPassword(e.target.value)}
               />
 
+              {submitError && (
+                <p className="text-xs text-center text-red-600 m-2">{submitError}</p>
+              )}
 
-              <button className="bg-black text-white p-2  rounded-lg mt-1">Log In</button>
+              <button className="bg-black text-white p-2  rounded-lg mt-1" disabled={submitting}>{submitting ? "Please wait..." : "Sign in"}</button>
               <div className="text-sm">
                 <p>Dont't have an account? <Link
 
                   className="text-blue-500 underline text-xs"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault()
                     if (window.innerWidth < 768) {
                       navigate("/register")
                     } else {
-                      setShowRegister(true)
                       setShowLogin(false)
+                      setShowRegister(true)
                     }
                   }}
                 >Sign up</Link></p>

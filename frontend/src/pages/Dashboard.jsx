@@ -11,6 +11,8 @@ import socket from "../Socket";
 
 const Dashboard = () => {
 
+  const { user, loading } = useContext(UserContext)
+
   const [deleteError, setDeleteError] = useState(null)
   const [error, setError] = useState(null)
   const [fetchError, setFetchError] = useState(null)
@@ -19,7 +21,7 @@ const Dashboard = () => {
   const [submit, setSubmit] = useState(false)
 
   const [workspaces, setWorkspaces] = useState([])
-  const [loading, setLoading] = useState(false)
+  // const [loading, setLoading] = useState(false)
   const [openMenuId, setOpenMenuId] = useState(false)
   const [showForm, setShowForm] = useState(false)
   const [deleteId, setDeleteId] = useState(null)
@@ -108,7 +110,7 @@ const Dashboard = () => {
     try {
 
       setFetchError(null)
-      setLoading(true)
+      // setLoading(true)
       const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces`, { withCredentials: true })
       setWorkspaces(res.data.workspaces)
 
@@ -117,7 +119,7 @@ const Dashboard = () => {
       setFetchError(err.response?.data?.message || "Failed to fetch workspaces")
 
     } finally {
-      setLoading(false)
+      // setLoading(false)
     }
   }
 
@@ -131,6 +133,12 @@ const Dashboard = () => {
       socket.off("workspaceAdded", fetchWorkspaces)
     }
   }, [])
+
+  useEffect(() => {
+  if (!loading && !user) {
+    navigate("/")
+  }
+}, [user, loading])
 
   return (
 

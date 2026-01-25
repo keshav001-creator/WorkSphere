@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { MdWorkspacesFilled } from "react-icons/md";
+import { MdWorkspacesOutline } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import axios from "../api/axios"
 import { UserContext } from "../context/UserContext";
@@ -14,6 +14,8 @@ const Register = () => {
   const [Email, setEmail] = useState("")
   const [Password, setPassword] = useState("")
   const {setUser}=useContext(UserContext)
+  const [submitting, setSubmitting]=useState(false)
+  const [submitError, setSubmitError]=useState(null)
 
 
   useEffect(() => {
@@ -26,7 +28,8 @@ const Register = () => {
     e.preventDefault()
 
     try {
-
+      setSubmitError(null)
+      setSubmitting(true)
       const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/register`, {
         fullName: {
           firstName,
@@ -43,6 +46,9 @@ const Register = () => {
 
     } catch (err) {
       console.log("error:", err)
+      setSubmitError(err.response?.data?.message || "Failed to Register.Try again!")
+    }finally{
+      setSubmitting(false)
     }
   }
 
@@ -54,12 +60,9 @@ const Register = () => {
     <div className="flex  text-center justify-center h-screen ">
 
       <div className="w-full p-5">
-
-
-
         <div className='flex items-center justify-between'>
           <div className="flex items-center gap-x-1">
-            <MdWorkspacesFilled className='text-lg text-green-700' />
+             <div className="bg-gray-800 rounded-lg p-1"> <MdWorkspacesOutline className='text-xl text-white lg:text-3xl' /></div>
             <h1 className='font-bold  text-lg'>WorkSphere</h1>
           </div>
           <button onClick={() => navigate("/")}><RxCross2 /></button>
@@ -107,11 +110,15 @@ const Register = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
 
+          {submitError && (
+            <p className="text-red-600 m-2 text-xs text-center">{submitError}</p>
+          )}
 
-          <button className="bg-black text-white p-2  rounded-lg">Create Account</button>
+
+          <button className="bg-black text-white p-2  rounded-lg">{submitting ? "..." : "Create"}</button>
           <div className="text-sm">
             <p>Already have an account? <Link className="text-blue-500 underline text-xs"
-              to="/login">Sign in</Link></p>
+              to="/">Sign in</Link></p>
           </div>
 
         </form>
