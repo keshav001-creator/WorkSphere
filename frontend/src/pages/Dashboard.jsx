@@ -21,7 +21,7 @@ const Dashboard = () => {
   const [submit, setSubmit] = useState(false)
 
   const [workspaces, setWorkspaces] = useState([])
-  // const [loading, setLoading] = useState(false)
+  const [fetchLoading, setFetchLoading] = useState(false)
   const [openMenuId, setOpenMenuId] = useState(false)
   const [showForm, setShowForm] = useState(false)
   const [deleteId, setDeleteId] = useState(null)
@@ -110,7 +110,7 @@ const Dashboard = () => {
     try {
 
       setFetchError(null)
-      // setLoading(true)
+      setFetchLoading(true)
       const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces`, { withCredentials: true })
       setWorkspaces(res.data.workspaces)
 
@@ -119,7 +119,7 @@ const Dashboard = () => {
       setFetchError(err.response?.data?.message || "Failed to fetch workspaces")
 
     } finally {
-      // setLoading(false)
+      setFetchLoading(false)
     }
   }
 
@@ -142,17 +142,16 @@ const Dashboard = () => {
 
   return (
 
-    <div className=" bg-gray-50 px-5 py-5 w-full ">
+    <div className=" px-5 py-5 w-full lg:px-10 lg:py-10 bg-gray-50">
 
       <div className={showForm || showConfirm ? "pointer-events-none select-none" : ""}>
-        <div className=" py-5">
+        <div className=" py-5 lg:flex justify-between items-center">
           <div className="flex flex-col justify-between mb-5">
-            <h1 className="font-semibold text-2xl">Workspaces</h1>
-            <p className="text-md mt-1 text-gray-500">Manage your projects and collaborate with your team</p>
+            <h1 className="font-semibold text-2xl lg:text-2xl">Workspaces</h1>
+            <p className="text-md mt-1 text-gray-500 lg:text-lg">Manage your projects and collaborate with your team</p>
           </div>
 
-          <button className="text-sm bg-gray-900 text-white py-2 rounded-md w-full"
-            // onClick={() => { navigate("/createWorkspace") }}
+          <button className="text-sm bg-gray-900 text-white py-2 rounded-md w-full lg:w-1/4 lg:text-lg"
             onClick={() => {
               setShowForm(true)
               setError(null)
@@ -167,26 +166,27 @@ const Dashboard = () => {
         )}
 
 
-        {loading ? (
+        {fetchLoading ? (
           <p className="text-center mt-10">Loading...</p>
         ) : workspaces.length === 0 && !fetchError ? (
           <div className="text-gray-600 text-center mt-5">
             <p className="font-semibold text-lg">No Workspace yet</p>
             <p className="text-sm mt-1">Create Your first Workspace</p>
           </div>
-        ) : <div className="grid grid-cols-1 gap-4 mt-5">
+        ) : 
+        <div className="grid grid-cols-1 gap-4 mt-5 lg:grid lg:grid-cols-4">
 
           {workspaces.map(ws => (
 
-            <div className="flex flex-col bg-white p-4 border border-gray-300 rounded-lg shadow-sm"
+            <div className="flex flex-col bg-white p-4 border border-gray-500 shadow-sm rounded-lg hover:border-2 hover:border-gray-700"
               key={ws._id}
               onClick={() => navigate(`/workspaces/${ws.workspaceId._id}`)}
             >
-              <div className="border-b border-gray-200 flex ">
-                <div className="flex flex-row justify-between w-full">
-                  <div>
-                    <h1 className="font-semibold">{ws.workspaceId.name}</h1>
-                    <p className="mb-5 text-xs text-gray-500">{ws.workspaceId.description}</p>
+              <div className="border-b border-gray-200 flex lg:flex-1">
+                <div className="flex flex-row justify-between w-full ">
+                  <div className="">
+                    <h1 className="font-semibold lg:text-lg">{ws.workspaceId.name}</h1>
+                    <p className="mb-5 text-xs text-gray-600 lg:text-sm">{ws.workspaceId.description}</p>
                   </div>
 
                   <div className="text-sm relative">
@@ -222,22 +222,22 @@ const Dashboard = () => {
 
                 <div className="flex flex-col jutify-center items-center">
                   <MdOutlineTask className="text-sm" />
-                  <p className="text-gray-500 text-xs mt-1">Tasks</p>
+                  <p className="text-gray-500 text-xs mt-1 lg:font-semibold">Tasks</p>
                 </div>
 
                 <div className="flex flex-col jutify-center items-center">
                   <GrDocumentText className="text-sm" />
-                  <p className="text-gray-500 text-xs mt-1">Docs</p>
+                  <p className="text-gray-500 text-xs mt-1 lg:font-semibold">Docs</p>
                 </div>
 
                 <div className="flex flex-col jutify-center items-center">
                   <AiOutlineTeam className="text-sm" />
-                  <p className="text-gray-500 text-xs mt-1">Members</p>
+                  <p className="text-gray-500 text-xs mt-1 lg:font-semibold">Members</p>
                 </div>
 
               </div>
 
-              <div className="text-xs text-gray-500 mt-5">
+              <div className="text-xs text-gray-800 mt-5  ">
                 {`Created- ${timeAgo(ws.createdAt)}`}
               </div>
 
@@ -249,7 +249,7 @@ const Dashboard = () => {
       </div>
 
       {showConfirm && (
-        <div className="fixed inset-0 z-30 bg-black/40 flex justify-center items-center">
+        <div className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm flex justify-center items-center">
 
           <div className="bg-white p-4 rounded-md w-60">
             <h2 className="font-semibold text-lg">Delete Document</h2>
@@ -288,7 +288,7 @@ const Dashboard = () => {
       {showForm && (
         <div className="fixed inset-0 z-30 bg-black/40 flex justify-center items-center">
 
-          <div className="flex flex-col px-4 py-2 bg-white w-[90vw] min-h-[50vh] rounded-lg items-center justify-center gap-y-5">
+          <div className="flex flex-col px-4 py-2 bg-white w-[90vw] min-h-[50vh] rounded-lg items-center justify-center gap-y-5 lg:w-1/4">
 
 
             <div className="">
@@ -299,9 +299,9 @@ const Dashboard = () => {
               onSubmit={handleSubmit}>
 
               <div className="flex flex-col gap-1">
-                <label className="hidden lg:block">Workspace Name</label>
+                <label className="hidden lg:block text-sm font-semibold">Workspace Name</label>
                 <input className="text-sm p-2 bg-gray-100 border border-gray-400 outline-0 rounded"
-                  placeholder='e.g., Marketing Team'
+                  placeholder='e.g., Project 1'
                   required
                   type="text"
                   value={name}
@@ -311,7 +311,7 @@ const Dashboard = () => {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="hidden lg:block">Description</label>
+                <label className="hidden lg:block text-sm font-semibold">Description</label>
                 <textarea className="text-sm p-2 bg-gray-100  border border-gray-400 outline-0 rounded"
                   placeholder='Brief description of the workspace'
                   required
@@ -325,7 +325,7 @@ const Dashboard = () => {
               {error ? <p className="text-red-500 text-xs">{error}</p> : ("")}
 
               <div className="flex justify-between gap-x-3">
-                <button className="bg-white text-black  px-2 py-1 rounded-sm border border-gray-300 w-1/2"
+                <button className="bg-white text-black  px-2 py-1 rounded-sm border border-gray-300 w-1/2 hover:bg-gray-100 hover:border-gray-700"
                   onClick={() => {
                     setShowForm(false)
                     setError(null)

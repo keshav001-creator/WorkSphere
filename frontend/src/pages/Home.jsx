@@ -58,7 +58,7 @@ const Home = () => {
   const handleAuthSubmit = async (e) => {
     e.preventDefault()
 
-    
+
     try {
       setSubmitError(null)
       setSubmitting(true)
@@ -157,10 +157,10 @@ const Home = () => {
 
       <div className={showRegister || showLogin ? " pointer-events-none select-none " : "flex flex-col "}>
 
-        <header className="nav sticky top-0 z-30 flex p-4 items-center justify-between  lg:p-4 bg-white lg:border-b border-gray-400">
+        <header className="nav sticky top-0 z-30 flex p-4 items-center justify-between  lg:p-4 bg-white border-b border-gray-300">
           <div className='flex items-center gap-x-1 lg:gap-x-2'>
-             <div className="bg-gray-800 rounded-lg p-1"> <MdWorkspacesOutline className='text-xl text-white lg:text-3xl' /></div>
-            <h1 className='font-bold  text-lg lg:text-2xl'>WorkSphere</h1>
+            <div className="bg-gray-800 rounded-lg p-1"> <MdWorkspacesOutline className='text-xl text-white lg:text-2xl' /></div>
+            <h1 className='font-bold  text-lg lg:text-xl'>WorkSphere</h1>
           </div>
 
           <div className="hidden lg:flex items-center justify-center gap-x-10">
@@ -178,7 +178,7 @@ const Home = () => {
 
         {/* hero */}
 
-        <section className='relative overflow-hidden min-h-screen flex flex-col items-center justify-center px-4 text-center lg:px-6 '>
+        <section className='relative overflow-hidden min-h-screen flex flex-col items-center justify-center px-4 text-center lg:px-6  border-b border-gray-300'>
 
           <video
             autoPlay
@@ -212,7 +212,7 @@ const Home = () => {
             <p className='text-sm text-black mt-3 lg:text-xl lg:text-center'>Create task, collaborate on documents, and get AI-powered summaries all in one place. </p>
 
             <div className="flex justify-center gap-x-3 lg:gap-x-5 ">
-              <button className='bg-black text-white text-sm p-2 rounded-md mt-5 lg:flex lg:items-center lg:justify-center lg:font-semibold lg:px-4 hover:shadow-lg transition'
+              <button className='bg-black text-white text-sm p-2 rounded-sm mt-5 lg:flex lg:items-center lg:justify-center lg:px-4 lg:text-lg hover:shadow-lg transition'
                 onClick={() => {
                   if (window.innerWidth < 768) {
                     navigate("/register")
@@ -222,9 +222,6 @@ const Home = () => {
                 }
                 } >
                 Get Started <span className="lg:ml-3"></span><FaArrowRight className="text-center hidden lg:block" /></button>
-
-              <button className='border border-gray-300 p-1 rounded-md mt-5 lg:px-4 lg:font-semibold hidden lg:block' >
-                Learn More </button>
             </div>
 
           </div>
@@ -233,7 +230,8 @@ const Home = () => {
 
         {/* features */}
 
-        <section className='px-4 py-10 lg:min-h-screen bg-gray-50 '>
+        <section id="features"
+        className='px-4 py-10 lg:min-h-screen bg-gray-100 border-b border-gray-300 '>
 
           <h3 className='text-center font-bold text-xl  lg:text-4xl lg:font-semibold'>Everything your team needs</h3>
           <h3 className='text-center text-lg mb-5 lg:text-3xl text-gray-600 lg:hidden'>Features</h3>
@@ -244,8 +242,7 @@ const Home = () => {
 
 
 
-            <div className="group relative overflow-hidden p-4 bg-yellow-100 lg:bg-white border border-gray-300 lg:p-6 hover:shadow-lg transition">
-              <div className="absolute bottom-0 left-0 w-full h-0 bg-yellow-100 transition-all duration-700 ease-out group-hover:h-full"></div>
+            <div className="group p-4 bg-white border border-gray-300 lg:p-6 hover:shadow-lg transition">
               <div className="relative z-10">
                 <RiTeamLine className="text-5xl mb-21" />
                 <h4 className="font-semibold mt-2 lg:text-xl">Team Workspaces</h4>
@@ -257,8 +254,8 @@ const Home = () => {
 
 
 
-            <div className="group relative overflow-hidden p-4   bg-green-100 lg:bg-white border border-gray-300 lg:p-6 hover:shadow-lg transition">
-              <div className="absolute bottom-0 left-0 w-full h-0 bg-green-100 transition-all duration-700 ease-out group-hover:h-full"></div>
+            <div className="group p-4 bg-white border border-gray-300 lg:p-6 hover:shadow-lg transition">
+              
               <div className="relative z-10">
                 <RiRobot3Line className="text-5xl mb-21" />
                 <h4 className="font-semibold mt-2 lg:text-xl">AI-Powered Documents</h4>
@@ -270,8 +267,7 @@ const Home = () => {
 
 
 
-            <div className="group relative overflow-hidden p-4 bg-amber-200 lg:bg-white border border-gray-300 lg:p-6 hover:shadow-lg transition">
-              <div className="absolute bottom-0 left-0 w-full h-0 bg-amber-200 transition-all duration-700 ease-out group-hover:h-full"></div>
+            <div className=" p-4 border border-gray-300 bg-white lg:p-6 hover:shadow-lg transition">
               <div className="relative z-10">
                 <CiTimer className="text-5xl mb-21" />
                 <h4 className="font-semibold mt-2 lg:text-xl">Real-Time Updates</h4>
@@ -283,8 +279,7 @@ const Home = () => {
 
 
 
-            <div className="group relative overflow-hidden p-4 bg-purple-200 lg:bg-white border border-gray-300 lg:p-6 hover:shadow-lg transition">
-              <div className="absolute bottom-0 left-0 w-full h-0 bg-purple-200 transition-all duration-700 ease-out group-hover:h-full"></div>
+            <div className="p-4 bg-white border border-gray-300 lg:p-6 hover:shadow-lg transition">
               <div className="relative z-10">
                 <MdOutlineSecurity className="text-5xl mb-21" />
                 <h4 className="font-semibold mt-2 lg:text-xl">Secure & Reliable</h4>
@@ -300,36 +295,101 @@ const Home = () => {
         </section>
 
 
-        <section className="px-4 py-12">
-          <h3 className="text-xl font-semibold text-center mb-6">
+
+        <section id="how-it-works" className="px-4 py-16 bg-white">
+          <h3 className="text-2xl font-bold text-center mb-12 lg:text-4xl">
             How it works
           </h3>
 
-          <div className="max-w-md mx-auto space-y-2 text-center text-sm text-gray-700">
-            <p>1. Create a workspace</p>
-            <p>2. Invite your team</p>
-            <p>3. Manage tasks & documents with AI</p>
+          <div className="grid grid-cols-1 gap-6 max-w-md mx-auto 
+                  lg:grid-cols-3 lg:max-w-6xl">
+
+            {/* STEP 1 */}
+            <div className="text-center p-6 border border-gray-400 lg:border-gray-300 bg-white hover:shadow-lg transition">
+              <div className="text-4xl font-bold text-gray-400 mb-4">01</div>
+              <h4 className="text-lg font-semibold mb-2 lg:text-xl">
+                Create a Workspace
+              </h4>
+              <p className="text-gray-600 text-sm lg:text-base">
+                Set up your workspace in seconds and organise tasks, docs, and teams.
+              </p>
+            </div>
+
+            {/* STEP 2 */}
+            <div className="text-center p-6 border border-gray-400 lg:border-gray-300 bg-white hover:shadow-lg transition">
+              <div className="text-4xl font-bold text-gray-400 mb-4">02</div>
+              <h4 className="text-lg font-semibold mb-2 lg:text-xl">
+                Invite Your Team
+              </h4>
+              <p className="text-gray-600 text-sm lg:text-base">
+                Invite teammates and collaborate in real time with shared access.
+              </p>
+            </div>
+
+            {/* STEP 3 */}
+            <div className="text-center p-6 border border-gray-400 lg:border-gray-300 bg-white hover:shadow-lg transition">
+              <div className="text-4xl font-bold text-gray-400 mb-4">03</div>
+              <h4 className="text-lg font-semibold mb-2 lg:text-xl">
+                Work Faster with AI
+              </h4>
+              <p className="text-gray-600 text-sm lg:text-base">
+                Let AI assist you in document summaries to save time.
+              </p>
+            </div>
+
           </div>
         </section>
 
-        {/* CTA + FOOTER */}
-        <footer className="px-2 py-5  text-center bg-gray-50">
-          <h3 className="text-lg font-semibold ">
-            Start your workspace today
-          </h3>
 
 
-          <div className="mt-2 text-xs text-gray-500">
-            © {new Date().getFullYear()} WorkSphere · Built by Me
+        <footer className="bg-gray-100 border-t border-gray-300 px-6 py-10">
+          <div className="max-w-6xl mx-auto flex flex-col gap-6 
+                  lg:flex-row lg:items-center lg:justify-between">
+
+            {/* BRAND */}
+            <div className="text-center lg:text-left">
+              <div className="flex items-center justify-center gap-2 lg:justify-start">
+                <div className="bg-gray-800 p-1 rounded">
+                  <MdWorkspacesOutline className="text-white text-lg" />
+                </div>
+                <span className="font-bold text-lg">WorkSphere</span>
+              </div>
+              <p className="text-sm text-gray-600 mt-2 max-w-sm">
+                Organise your team’s work, collaborate seamlessly, and move faster with AI.
+              </p>
+            </div>
+
+            {/* CTA */}
+            <div className="flex flex-col items-center gap-3 lg:items-end">
+              <button
+                onClick={() => {
+                  if (window.innerWidth < 768) {
+                    navigate("/register")
+                  } else {
+                    setShowRegister(true)
+                  }
+                }
+                }
+                className="bg-black text-white px-6 py-2 text-sm font-semibold hover:shadow-lg transition"
+              >
+                Get Started
+              </button>
+
+              <p className="text-xs text-gray-500">
+                © {new Date().getFullYear()} WorkSphere · Built by Me
+              </p>
+            </div>
+
           </div>
         </footer>
+
 
 
       </div>
 
       {showRegister && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white w-full max-w-sm p-6 rounded-xl shadow-xl relative animate-in fade-in zoom-in duration-200">
+          <div className="bg-white w-full max-w-sm p-6 border-gray-300 rounded-sm shadow-xl relative animate-in fade-in zoom-in duration-200">
 
             {/* CLOSE */}
             <button
@@ -339,11 +399,11 @@ const Home = () => {
               }}
 
             >
-              <RxCross2 className="absolute top-3 right-3 text-gray-400 hover:text-black" />
+              <RxCross2 className="absolute top-3 right-3 text-gray-600 hover:text-black lg:text-xl" />
             </button>
 
             {/* REGISTER FORM */}
-            <form className="flex flex-col gap-y-3 mt-10"
+            <form className="flex flex-col gap-y-3"
               onSubmit={handleAuthSubmit}>
 
               <div className="mb-1 flex flex-col items-center">
@@ -417,7 +477,7 @@ const Home = () => {
 
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
 
-          <div className=" relative bg-white rounded-xl px-4 py-2 shadow-xl w-[90vw] min-h-[50vh]">
+          <div className=" relative bg-white rounded-xl px-4 py-2 shadow-xl w-[90vw] min-h-[50vh] lg:w-full lg:max-w-sm">
 
             <button
               onClick={() => {
@@ -426,7 +486,7 @@ const Home = () => {
               }}
 
             >
-              <RxCross2 className="absolute top-3 right-3 text-gray-400 hover:text-black" />
+              <RxCross2 className="absolute top-3 right-3 text-gray-600 hover:text-black lg:text-2xl" />
             </button>
 
             <div className="flex flex-col text-center mb-2">

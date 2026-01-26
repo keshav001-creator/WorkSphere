@@ -18,8 +18,10 @@ const Navbar = () => {
   // console.log(notifications)
   const { user } = useContext(UserContext)
   const [showNotification, setShowNotification] = useState(false)
+  const [showonDesktop, setShowonDesktop] = useState(false)
 
   const isWorkspacePage = location.pathname.startsWith("/workspaces")
+  const isPrfilePage = location.pathname.startsWith("/profile")
 
 
 
@@ -57,51 +59,93 @@ const Navbar = () => {
     if (days === 1) return "Yesterday"
     if (days < 7) return `${days} days ago`
 
-    return created.toLocaleDateString() 
+    return created.toLocaleDateString()
   }
 
 
 
   return (
 
-    <div className='fixed top-0 z-30 w-full flex items-center justify-between bg-white p-4 border-b border-gray-300'>
+    <div className='fixed top-0 z-30 w-full flex items-center justify-between bg-white p-4 border-b border-gray-600 lg:px-10'>
 
       <div className='flex items-center justify-center gap-x-1 '>
 
-        {isWorkspacePage ? (
+        {isWorkspacePage || isPrfilePage ? (
 
-          <div>
-            <FaArrowLeft className="text-xs"
-              onClick={() => navigate("/dashboard")}
-            />
-            {/* <h1>Back</h1> */}
+          <div className="flex items-center gap-x-2 hover:text-lg"
+            onClick={() => navigate("/dashboard")}>
+            <FaArrowLeft className="text-xs" />
+            <p className="font-semibold">Home</p>
           </div>
 
 
         ) : (
           <div className='flex items-center gap-x-1 lg:gap-x-2'>
-            <div className="bg-gray-800 rounded-lg p-1"> <MdWorkspacesOutline className='text-xl text-white lg:text-3xl' /></div>
-            <h1 className='font-semibold  text-lg lg:text-2xl'>WorkSphere</h1>
+            <div className="bg-gray-800 rounded-lg p-1"> <MdWorkspacesOutline className='text-xl text-white lg:text-2xl' /></div>
+            <h1 className='font-semibold  text-lg lg:text-xl'>WorkSphere</h1>
           </div>
         )}
       </div>
 
-      <div className="flex gap-x-4 items-center">
+      <div className="flex gap-x-4 items-center lg:w-auto">
 
-        {notifications.length ? (
-          <div onClick={() => setShowNotification(true)}>
-            <VscBellDot className="text-xl" />
-          </div>
-        ) : (
-          <div onClick={() => setShowNotification(true)}>
-            <LuBell className="text-xl" />
+
+        <div
+          onClick={() => {
+            setShowNotification(true)
+            setShowonDesktop(prev => !prev)
+          }}
+          className="cursor-pointer"
+        >
+          {notifications.length ? (
+            <VscBellDot className="text-xl lg:text-2xl " />
+          ) : (
+            <LuBell className="text-xl lg:text-2xl" />
+          )}
+        </div>
+
+        {showonDesktop && (
+          <div className="hidden lg:block absolute z-50 w-1/4 h-[50vh] top-[50px] right-[110px] bg-white rounded-xl shadow-xl border border-gray-400 overflow-hidden">
+
+            <div className="flex justify-between border-b border-gray-300 p-3">
+              <h1 className="text-sm font-semibold lg:text-lg">Notifications</h1>
+              <button onClick={() => setShowonDesktop(false)}>
+                <RxCross2 className="text-gray-500" />
+              </button>
+            </div>
+
+            <div className="p-2 overflow-y-auto h-full">
+              {notifications.length ? (
+                notifications.map((n, i) => (
+                  <div
+                    key={i}
+                    className="p-3 mb-2 rounded-lg bg-blue-50 text-sm"
+                  >
+                    <p>{n.message}</p>
+                    <p
+                      className="font-semibold underline cursor-pointer"
+                      onClick={() => handleAccept(n.token)}
+                    >
+                      Click here to join
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {timeAgo(n.createdAt)}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500">No notifications</p>
+              )}
+            </div>
+
           </div>
         )}
 
-        {showNotification && (
-          <div className="fixed inset-0 z-30 flex justify-center items-start bg-black/50">
 
-            <div className="bg-white w-[95vw] h-[50vh] rounded-md flex flex-col">
+        {showNotification && (
+          <div className="fixed lg:hidden inset-0 lg:inset-x-0 lg:top-[68.67px] lg:bottom-0 z-50 flex justify-center items-start bg-black/50 lg:justify-end">
+
+            <div className="bg-white w-[95vw] h-[50vh] rounded-md flex flex-col lg:top-[68.67px] lg:w-1/4">
 
               <div className="flex justify-between border-b border-gray-300 p-3">
                 <div><h1 className="text-xl font-semibold">Notifications</h1></div>
@@ -129,7 +173,7 @@ const Navbar = () => {
                       </div>
                     ))
                   ) : (
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 ">
                       No notifications
                     </p>
                   )}
@@ -143,7 +187,7 @@ const Navbar = () => {
         <div className="rounded-full"
           onClick={() => navigate("/profile")}
         >
-          <img className="w-7 h-7 rounded-full" src={user?.avatar}></img>
+          <img className="w-7 h-7 rounded-full lg:h-9 lg:w-9" src={user?.avatar}></img>
         </div>
 
       </div>

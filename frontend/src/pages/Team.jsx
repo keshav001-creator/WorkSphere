@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react"
 import { useParams } from "react-router-dom";
 import { BsPersonPlus } from "react-icons/bs";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
+import { AiOutlineTeam } from "react-icons/ai";
 import { RxCross2 } from "react-icons/rx";
 import { FiShield } from "react-icons/fi";
 import axios from "../api/axios"
@@ -14,7 +15,7 @@ const Team = () => {
 
   const { workspaceId } = useParams()
   const { user } = useContext(UserContext)
-  
+
   const [team, setTeam] = useState([])
   const [showForm, setShowForm] = useState(false)
   const [Email, setEmail] = useState("")
@@ -97,17 +98,17 @@ const Team = () => {
   return (
 
     <>
-      <div className={`bg-gray-50 w-full p-5 flex flex-col border-b border-gray-400 overflow-y-auto 
+      <div className={` w-full p-5 flex flex-col border-b border-gray-400 overflow-y-auto lg:px-10 bg-gray-50
           ${showForm ? "pointer-events-none select-none" : ""}`}>
 
-        <div className=''>
+        <div className='lg:flex justify-between'>
           <div>
-            <h1 className='text-xl font-semibold'>Team Members</h1>
-            <p className='text-gray-600 text-sm mt-1'>number of members</p>
+            <h1 className='text-xl font-semibold lg:text-2xl'>Team Members</h1>
+            <p className='text-gray-600 text-sm mt-1 lg:text-sm'  >Number of members</p>
           </div>
 
-          <div className='flex justify-center mt-5'>
-            <button className='bg-gray-900 text-white py-2 rounded-md text-md w-full flex items-center justify-center gap-x-2'
+          <div className='flex justify-center mt-5 '>
+            <button className='bg-gray-900 text-white py-2 rounded-md text-md w-full flex items-center justify-center gap-x-2 lg:px-4 lg:py-2 hover:shadow-lg'
               onClick={() => {
                 setShowForm(true)
                 setSubmitError(null)
@@ -125,37 +126,39 @@ const Team = () => {
         {loading ?
           <p className="text-center mt-5 mb-5">Loading...</p> :
 
-          <div className="border border-gray-200 mt-5 rounded-lg p-2 shadow-md">
+          <div className="border border-gray-300 mt-5 rounded-lg p-2 lg:grid grid-cols-2 gap-x-4 lg:mt-10">
 
             {team.map(member => (
-              <div className="p-4 border border-gray-200 justify-between bg-white mt-2 rounded-md "
+              <div className="p-4 border border-gray-300 justify-between bg-white mt-2 rounded-md hover:border hover:border-gray-800"
                 key={member._id}>
 
-                <div className="flex gap-x-2 items-center">
-                  <div className="">
-                    <img className="h-8 w-8 rounded-full"
-                      src={`${member.userId.avatar}`}></img>
-                  </div>
-
-                  <div>
-
-                    <div className="flex gap-x-3 items-center">
-                      <h1 className="font-semibold">{member.userId.fullName.firstName} {member.userId.fullName.lastName}</h1>
-                      {user && member.userId._id === user._id ? (<p className="bg-blue-50 text-xs text-blue-700 border border-blue-200 rounded-lg font-semibold px-2 py-1">You</p>) : ""}
+                <div className="lg:flex justify-between">
+                  <div className="flex gap-x-2 items-center">
+                    <div className="">
+                      <img className="h-8 w-8 rounded-full lg:h-10 lg:w-10"
+                        src={`${member.userId.avatar}`}></img>
                     </div>
 
-                    <p className="text-xs text-gray-500 mt-1">{member.userId.email}</p>
-                    <p className="text-xs mt-1 text-gray-500">{`Joined- ${timeAgo(member.createdAt)}`}</p>
+                    <div>
+
+                      <div className="flex gap-x-3 items-center">
+                        <h1 className="font-semibold lg:text-lg">{member.userId.fullName.firstName} {member.userId.fullName.lastName}</h1>
+                        {user && member.userId._id === user._id ? (<p className="bg-blue-50 text-xs text-blue-700 border border-blue-200 rounded-lg font-semibold px-2 py-1">You</p>) : ""}
+                      </div>
+
+                      <p className="text-xs text-gray-700  font-semibold">{member.userId.email}</p>
+                      <p className="text-xs mt-1 text-gray-500">{`Joined- ${timeAgo(member.createdAt)}`}</p>
+                    </div>
+
+                  </div>
+
+
+
+                  <div className="">
+                    <h1 className="text-xs bg-gray-200 border border-gray-200 py-1 px-2 rounded-md inline-block font-semibold">{member.role}</h1>
                   </div>
 
                 </div>
-
-
-
-                <div className="">
-                  <h1 className="text-xs bg-gray-100 border border-gray-200 py-1 px-2 rounded-md inline-block ">{member.role}</h1>
-                </div>
-
 
 
               </div>
@@ -172,69 +175,99 @@ const Team = () => {
             <h1 className="font-semibold text-center text-lg">Role Permissions</h1>
           </div>
 
-          <div className="bg-white p-2 rounded-lg border border-gray-300">
-            <h1 className="font-semibold text-xs px-2 py-1 bg-gray-100 border border-gray-200 rounded-lg inline-block">Owner</h1>
-            <p className="text-xs text-gray-500 mt-1">Full workspace control, can delete workspace, invite members, and manage all settings.</p>
-          </div>
+          <div className="flex flex-col gap-y-2 lg:grid grid-cols-3 gap-x-4">
+            <div className="bg-white p-2 rounded-lg border border-gray-300">
+              <h1 className="font-semibold text-xs px-2 py-1 bg-gray-100 border border-gray-200 rounded-lg inline-block">Owner</h1>
+              <p className="text-xs text-gray-900 mt-1">Full workspace control, can delete workspace, invite members, and manage all settings.</p>
+            </div>
 
-          <div className="bg-white p-2 rounded-lg border border-gray-300 ">
-            <h1 className="font-semibold text-xs  px-2 py-1 bg-gray-100 border border-gray-200 rounded-lg inline-block">Admin</h1>
-            <p className="text-xs text-gray-500 mt-1" >Access to full workspace control, deleting workspace and inviting member is forbidden.</p>
-          </div>
+            <div className="bg-white p-2 rounded-lg border border-gray-300 ">
+              <h1 className="font-semibold text-xs  px-2 py-1 bg-gray-100 border border-gray-200 rounded-lg inline-block">Admin</h1>
+              <p className="text-xs text-gray-900 mt-1" >Access to full workspace control, deleting workspace and inviting member is forbidden.</p>
+            </div>
 
-          <div className="bg-white p-2 rounded-lg border border-gray-300">
-            <h1 className="font-semibold text-xs  px-2 py-1 bg-gray-100 border border-gray-200 rounded-lg inline-block">Member</h1>
-            <p className="text-xs text-gray-500 mt-1">Read-only access to all workspace content.</p>
+            <div className="bg-white p-2 rounded-lg border border-gray-300">
+              <h1 className="font-semibold text-xs  px-2 py-1 bg-gray-100 border border-gray-200 rounded-lg inline-block">Member</h1>
+              <p className="text-xs text-gray-900 mt-1">Read-only access to all workspace content.</p>
+            </div>
           </div>
         </div>
       </div>
 
       {showForm && (
-        <div className="fixed inset-0 z-30  flex justify-center items-center bg-black/50">
+        <div className="fixed inset-0 z-50  flex justify-center items-center bg-black/50">
 
-          <div className="bg-white h-[95vh] w-[90vw] p-2 rounded-2xl">
+          <div className="bg-white h-[95vh] w-[90vw] rounded-2xl lg:w-1/3 lg:h-[80vh] flex flex-col p-2">
 
-            <form className="flex flex-col gap-y-3 flex-1"
+            <div className="border-b border-gray-300 p-4 flex justify-between">
+              <h1 className="text-lg font-semibold lg:text-xl">Invite Team Members</h1>
+              <button onClick={() => setShowForm(false)}><RxCross2 className="text-gray-500 lg:text-lg hover:text-xl" /></button>
+            </div>
+
+            <form className="flex flex-col gap-y-3 p-2 lg:p-5 overflow-y-auto"
               onSubmit={handleSubmit}
             >
-
-              <div className="border-b border-gray-300 p-4 flex justify-between">
-                <h1 className="text-lg font-semibold">Invite Team Members</h1>
-                <button onClick={() => setShowForm(false)}><RxCross2 className="text-gray-500" /></button>
-              </div>
-
               <div className="flex flex-col mt-2">
-                <label className="text-xs font-semibold">Email Address</label>
-                <input className="text-sm p-2 bg-white border border-gray-400 outline-0 rounded mt-1"
+                <label className="text-xs font-semibold lg:text-sm">Email Address</label>
+                <input className="text-sm p-2 bg-gray-50 border border-gray-400 outline-0 rounded-lg mt-1  "
                   placeholder='Email'
                   required
                   type="email"
                   value={Email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
+                <p className="text-xs text-gray-600 mt-1">Send an invitation email to join this workspace</p>
 
               </div>
 
 
-              <label>
-                <input
-                  type="radio"
-                  name="role"
-                  value="Member"
-                  checked={role === "Member"}
-                  onChange={() => setRole("Member")}
-                /> Member
-              </label>
+              <div className="flex flex-col gap-y-2">
+                <h1 className="text-sm font-semibold ">Role</h1>
+                {/* MEMBER */}
+                <label className="flex items-start gap-x-3 cursor-pointer border-2 border-gray-200 p-4 rounded-2xl hover:border-gray-300">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="Member"
+                    checked={role === "Member"}
+                    onChange={() => setRole("Member")}
+                    className="mt-1"
+                  />
 
-              <label>
-                <input
-                  type="radio"
-                  name="role"
-                  value="Admin"
-                  checked={role === "Admin"}
-                  onChange={() => setRole("Admin")}
-                /><MdOutlineAdminPanelSettings /> Admin
-              </label>
+                  <div>
+                    <div className="flex items-center gap-x-1 font-medium ">
+                      <span className="text-xs bg-gray-100 px-2 py-1  flex items-center gap-x-1 font-medium rounded-lg border border-gray-400 "><AiOutlineTeam />Member</span>
+                    </div>
+                    <p className="text-xs font-semibold text-gray-600">
+                      Read only access to all workspace content
+                    </p>
+                  </div>
+                </label>
+
+                {/* ADMIN */}
+                <label className="flex items-start gap-x-3 cursor-pointer border-2 border-gray-200 p-4 rounded-2xl
+                hover:border-gray-300">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="Admin"
+                    checked={role === "Admin"}
+                    onChange={() => setRole("Admin")}
+                    className="mt-1"
+                  />
+
+                  <div>
+                    <div className="flex items-center gap-x-1 font-medium ">
+                      <span className="text-xs bg-gray-100 px-2 py-1  flex items-center gap-x-1 font-medium rounded-lg border border-gray-400 "><MdOutlineAdminPanelSettings />Admin</span>
+                    </div>
+                    <p className="text-xs text-gray-600 font-semibold">
+                      Access to all content except invitation and deletion of workspace
+                    </p>
+                  </div>
+                </label>
+              </div>
+
+
 
               {submitError && (
                 <p className="text-red-600 text-center mt-2 text-xs">{submitError}</p>
@@ -243,7 +276,7 @@ const Team = () => {
 
               <div className="flex justify-between items-center py-2 gap-x-3">
 
-                <button className="bg-white p-2 border border-gray-300 rounded-lg w-full"
+                <button className="bg-white p-2 border border-gray-300 rounded-lg w-full hover hover:bg-gray-100 hover:border hover:border-gray-500"
                   onClick={() => {
                     setShowForm(false)
                     setSubmitError(null)

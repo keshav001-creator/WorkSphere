@@ -89,13 +89,13 @@ const Documents = () => {
 
 
   return (
-    <div className="w-full p-2 flex flex-col bg-gray-50">
+    <div className="w-full p-2 flex flex-col lg:px-10 bg-gray-50">
 
 
       <div className={showConfirm ? "pointer-events-none select-none" : ""}>
-        <div className="flex flex-col p-2 mt-3">
-          <h1 className="text-xl font-semibold">Documents</h1>
-          <button className="w-full bg-gray-950 text-white p-2 rounded-md mt-2"
+        <div className="flex flex-col p-2 mt-3 lg:flex lg:flex-row lg:justify-between">
+          <h1 className="text-xl font-semibold lg:text-2xl">Documents</h1>
+          <button className="w-full bg-gray-950 text-white p-2 rounded-md mt-2 lg:w-1/4"
             onClick={() => navigate(`/workspaces/${workspaceId}/documents/createDocument`)}>+ New Document</button>
         </div>
 
@@ -114,7 +114,7 @@ const Documents = () => {
 
           <div className="p-2 grid grid-cols-1">
             {document.map(doc =>
-              <div className="border mt-5 border-gray-200 rounded-md shadow-sm  px-2 py-4 bg-white "
+              <div className="border mt-5 border-gray-400 rounded-md   px-2 py-4 bg-white hover:border hover:bg-gray-200 "
                 onClick={() => navigate(`/workspaces/${workspaceId}/documents/${doc._id}`)}
                 key={doc._id}>
 
@@ -126,26 +126,26 @@ const Documents = () => {
                   <div className="flex-1">
                     <h1 className="font-semibold">{doc.title}</h1>
                     <p className="line-clamp-2 break-word break-all text-gray-600 text-sm font-semibold overflow-hidden">{doc.content}</p>
-                    <div className="flex  mt-3 items-center text-xs text-gray-500 gap-x-2">
+                    <div className="flex  mt-3 items-center text-xs text-gray-700 gap-x-2">
                       <RxPerson />
                       <p className=""> {doc.createdBy.fullName.firstName} {doc.createdBy.fullName.lastName}</p>
                     </div>
 
                     <div className="flex justify-between">
-                      <div className="text-xs text-gray-500 flex gap-x-2 items-center">
+                      <div className="text-xs text-gray-700 flex gap-x-2 items-center">
                         <LuClock />
                         <p className="">{timeAgo(doc.createdAt)}</p>
                       </div>
                     </div>
                   </div>
-                  <button className="shrink-0 flex items-end"
+                  <button className="shrink-0 flex items-end lg:items-start"
                     onClick={(e) => {
                       e.stopPropagation()
                       setDeleteId(doc._id)
                       setDeleteError(null)
                       setShowConfirm(true)
                     }}
-                  ><RiDeleteBinLine className="text-red-700 text-md" /></button>
+                  ><RiDeleteBinLine className="text-red-700 lg:text-lg text-md hover hover:text-xl" /></button>
                 </div>
               </div>
             )}
@@ -154,7 +154,7 @@ const Documents = () => {
       </div>
 
       {showConfirm && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white p-4 rounded-md w-60">
             <h2 className="font-semibold text-lg">Delete Document</h2>
             <p className="text-sm text-gray-600 mt-2 mb-4">

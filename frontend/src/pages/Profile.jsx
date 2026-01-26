@@ -59,7 +59,6 @@ const Profile = () => {
 
       }, { withCredentials: true })
 
-      console.log(res.data.updatedUser)
       setUser(res.data.updatedUser)
       navigate("/dashboard")
 
@@ -92,19 +91,13 @@ const Profile = () => {
 
   return (
 
-    <>
-      <div className='min-h-screen bg-white'>
+  
+    <div className="flex justify-center items-center w-full bg-gray-50">
 
-        <div className="flex items-center gap-x-2 border-b border-gray-300 p-2">
-          <FaArrowLeft className="text-xs"
-            onClick={() => navigate("/dashboard")} />
-          <h1>Edit Profile</h1>
-        </div>
 
-        <div className="w-full p-4">
-
+        <div className="w-full px-4 py-2 lg:w-1/4 lg:bg-white lg:shadow-md lg:rounded-2xl">
           <div className="flex items-center justify-center">
-            <img className="rounded-full h-20 w-20 "
+            <img className="rounded-full h-20 w-20 lg:h-25 lg:w-25"
               src={user?.avatar}></img>
           </div>
 
@@ -112,8 +105,8 @@ const Profile = () => {
             onSubmit={handleSubmit}>
 
             <div className="flex flex-col">
-              <label className="text-xs font-semibold mb-1">First Name</label>
-              <input className="border border-gray-300 p-2 rounded-sm text-sm outline-none"
+              <label className="text-xs font-semibold mb-1 lg:text-sm">First Name</label>
+              <input className="border border-gray-300 p-2 rounded-sm text-sm outline-none "
                 required
                 type="text"
                 name="firstName"
@@ -124,8 +117,8 @@ const Profile = () => {
             </div>
 
             <div className="flex flex-col ">
-              <label className="text-xs font-semibold mb-1">Last Name</label>
-              <input className="border border-gray-300 p-2 rounded-sm text-sm outline-none"
+              <label className="text-xs font-semibold mb-1 lg:text-sm">Last Name</label>
+              <input className="border border-gray-300 p-2 rounded-sm text-sm outline-none "
                 required
                 type="text"
                 name="lastName"
@@ -135,8 +128,8 @@ const Profile = () => {
             </div>
 
             <div className="flex flex-col">
-              <label className="text-xs font-semibold mb-1">Email</label>
-              <input className="border border-gray-200 bg-gray-100 p-2 rounded-sm text-sm outline-none cursor-not-allowed"
+              <label className="text-xs font-semibold mb-1 lg:text-sm">Email</label>
+              <input className="border border-gray-200 bg-gray-100 p-2 rounded-sm text-sm outline-none  cursor-not-allowed"
                 required
                 type="email"
                 value={form.email}
@@ -150,14 +143,14 @@ const Profile = () => {
             )}
 
             {/* <button className="bg-white border border-gray-300 px-2 py-1 rounded-sm text-black">Cancel</button> */}
-            <button className="bg-black p-2 rounded-sm text-sm text-white mt-3"
+            <button className="bg-black p-2 rounded-sm text-sm text-white mt-3 hover:shadow-lg"
             >
               {updating ? "Updating..." : "Update Profile"}
             </button>
 
           </form>
 
-          <button className="bg-red-700 p-2 rounded-sm text-sm text-white mt-2 w-full"
+          <button className="bg-red-700 p-2 rounded-sm text-sm text-white mt-2 w-full hover:shadow-lg"
             onClick={() => {
               logoutHandler
               setShowConfirm(true)
@@ -166,7 +159,7 @@ const Profile = () => {
 
         </div>
 
-      </div>
+  
 
       {showConfirm && (
         <div className="fixed inset-0 z-30 bg-black/40 flex justify-center items-center">
@@ -203,7 +196,9 @@ const Profile = () => {
         </div>
       )
       }
-    </>
+    
+    </div>
+
   )
 }
 

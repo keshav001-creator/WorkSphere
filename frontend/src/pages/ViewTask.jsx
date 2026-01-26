@@ -14,7 +14,7 @@ const ViewTask = () => {
     priority: "High",
     status: "Todo",
     assignToMember: ""
-  })
+  })  
 
   const navigate = useNavigate()
 
@@ -88,19 +88,19 @@ const ViewTask = () => {
 
   return (
 
-    <div className="h-[calc(100vh-60.67px)] w-full px-2">
-      <div className="flex flex-col px-4 py-2 bg-white rounded-lg">
-        <h1 className="text-xl font-bold text-center mb-2">Task</h1>
+    <div className="h-[calc(100vh-60px)] w-full px-2 flex items-center justify-center lg:bg-gray-50">
+      <div className="flex flex-col px-4 py-2 bg-white rounded-lg w-full lg:w-[50vw] h-[80vh] lg:p-0 lg:rounded-2xl lg:shadow-md lg:border border-gray-300">
 
+        <h1 className="text-xl font-semibold text-center mb-2 lg:text-2xl lg:mt-2 lg:p-3">Task Details</h1>
         {fetchError ? (
           <p className="text-red-600 text-center mb-2 mt-2">{fetchError}</p>
-        ) : <form className="flex flex-col gap-y-2 flex-1"
+        ) : <form className="flex flex-col gap-y-2 lg:p-4 lg:overflow-y-auto lg:border-t border-gray-300"
           onSubmit={handleSubmit}
         >
 
           <div className="flex flex-col">
-            <label className="text-xs font-semibold">Title</label>
-            <input className='w-full text-sm outline-none bg-white border px-2 py-1 border-gray-300 rounded-lg mb-2'
+            <label className="text-xs lg:text-sm font-semibold">Title</label>
+            <input className='w-full text-sm outline-none bg-gray-50 border px-2 py-1 lg:p-3 border-gray-300 rounded-lg mb-2'
               placeholder='title'
               type="text"
               name="title"
@@ -110,9 +110,9 @@ const ViewTask = () => {
           </div>
 
           <div className="flex flex-col ">
-            <label className="text-xs font-semibold">Description</label>
+            <label className="text-xs lg:text-sm font-semibold">Description</label>
             <textarea
-              className="w-full text-sm outline-none bg-white border px-2 py-1 border-gray-300 rounded-lg"
+              className="w-full text-sm outline-none bg-gray-50 border px-2 py-1 lg:p-3 border-gray-300 rounded-lg"
               placeholder='brief description about task'
               type="text"
               name="description"
@@ -122,9 +122,9 @@ const ViewTask = () => {
           </div>
 
           <div className="flex flex-col flex-1">
-            <label className="text-xs font-semibold ">Status</label>
+            <label className="text-xs lg:text-sm font-semibold ">Status</label>
 
-            <select className="text-sm px-2 py-1 bg-gray-100 rounded-md border border-gray-300 "
+            <select className="text-sm px-2 py-1 lg:p-3 bg-gray-50 rounded-md border border-gray-300 "
               value={task.status}
               name="status"
               onChange={handleChange}><option value="Todo">Todo</option>
@@ -135,9 +135,9 @@ const ViewTask = () => {
           </div>
 
           <div className="flex flex-col flex-1">
-            <label className="text-xs font-semibold ">Priority</label>
+            <label className="text-xs lg:text-sm font-semibold ">Priority</label>
 
-            <select className="text-sm px-2 py-1 bg-gray-100 rounded-md border border-gray-300"
+            <select className="text-sm px-2 py-1 lg:p-3 bg-gray-50 rounded-md border border-gray-300"
               value={task.priority}
               name="priority"
               onChange={handleChange}  > <option value="High">High</option>
@@ -148,9 +148,9 @@ const ViewTask = () => {
           </div>
 
           <div className="flex flex-col flex-1">
-            <label className="text-xs font-semibold">Assigned to</label>
+            <label className="text-xs lg:text-sm font-semibold">Assigned to</label>
 
-            <input className='w-full text-sm outline-none bg-white border px-2 py-1 border-gray-300 rounded-lg mb-2'
+            <input className='w-full text-sm outline-none bg-gray-50 border px-2 py-1 lg:p-3 border-gray-300 rounded-lg mb-2'
               type="text"
               name="assignToMember"
               value={task.assignToMember}
@@ -159,15 +159,15 @@ const ViewTask = () => {
           </div>
 
           {submitError && (
-            <p className="text-red-600 text-xs text-center">{submitError}</p>
+            <p className="text-red-600 text-xs lg:text-sm text-center">{submitError}</p>
           )}
 
-          <div className="flex gap-x-1  mt-1">
-            <button className="px-2  py-1 w-full bg-white border border-gray-400 rounded-md"
+          <div className="flex gap-x-2  mt-1">
+            <button className="px-2  py-1 w-full bg-white border border-gray-400 rounded-md lg:p-3 hover:bg-gray-100 hover:border-gray-600"
               type="button"
               onClick={() => navigate(`/workspaces/${workspaceId}/task`)}
             >Cancel</button>
-            <button className=" px-2  py-1 w-full bg-gray-950 text-white rounded-md"
+            <button className=" px-2  py-1 w-full bg-gray-950 text-white rounded-md lg:p-3"
               type="submit"
             >
               {updating ? "updating..." : "Save Changes"}

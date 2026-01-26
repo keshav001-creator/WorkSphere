@@ -20,9 +20,9 @@ const AppRoutes = () => {
 
       <Route path="/" element={<Home />}></Route>
       <Route path="/register" element={<Register />}></Route>
-      <Route path="/profile" element={<Profile />}></Route>
 
       <Route element={<AppLayout />}>
+      <Route path="/profile" element={<Profile />}></Route>
         <Route path="/dashboard" element={<Dashboard />}></Route>
         <Route path="/workspaces/:workspaceId/documents/:docId" element={<ViewDoc />}></Route>
         <Route path="/workspaces/:workspaceId/documents/createDocument" element={<CreateDocument/>}></Route>

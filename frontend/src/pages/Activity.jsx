@@ -55,8 +55,8 @@ const Activity = () => {
 
   return (
 
-    <div className="p-4 w-full bg-gray-50">
-      <h1 className="text-center text-lg font-semibold mt-2 mb-5">Activity logs</h1>
+    <div className="p-4 w-full bg-gray-50 lg:px-10">
+      <h1 className="text-center text-lg font-semibold mt-2 mb-5 lg:text-2xl">Activity logs</h1>
 
 
       {fetchError && (
@@ -71,7 +71,7 @@ const Activity = () => {
       ) : (
         logs.map(log => (
           <div key={log._id}
-            className="flex gap-x-1 items-center border border-gray-200 shadow-sm p-2 mt-2 rounded-lg bg-white">
+            className="flex gap-x-1 items-center border border-gray-300  p-2 mt-2 rounded-lg bg-white lg:p-3 lg:gap-x-2 hover hover:border-gray-600 hover:bg-gray-100">
 
 
             <div className="flex w-12 justify-center items-center shrink-0">
@@ -81,9 +81,9 @@ const Activity = () => {
 
             <div className="flex flex-col justify-end flex-1">
               <div >
-                <p className=" text-gray-500 text-sm"><span className="font-semibold text-black">{log.actor.fullName.firstName} {log.actor.fullName.lastName} </span>{log.message}</p>
+                <p className=" text-gray-600 text-sm"><span className="font-semibold text-black ">{log.actor.fullName.firstName} {log.actor.fullName.lastName} </span>{log.message}</p>
               </div>
-              <p className="text-xs text-gray-500 mt-2">{timeAgo(log.createdAt)}</p>
+              <p className="text-xs text-gray-500 mt-1">{timeAgo(log.createdAt)}</p>
             </div>
 
           </div>

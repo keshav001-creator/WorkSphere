@@ -94,15 +94,15 @@ const ViewDoc = () => {
 
 
     return (
-        <div className='px-4 py-2  flex flex-col w-full'>
+        <div className='px-4 py-2  flex flex-col w-full justify-center items-center bg-gray-50'>
 
-            <div className='w-full mt-3'>
+            <div className='mt-3 lg:w-2/3'>
                 {fetchError ? <p className='text-red-600 text-center mt-5'>{fetchError}</p> :
 
                     <form className=''
                         onSubmit={handleSubmit}>
                         <div className='flex px-2 mb-3 justify-between'>
-                            <input className='w-1/2 outline-none text-xl'
+                            <input className='w-1/2 outline-none text-xl font-semibold lg:text-2xl'
                                 placeholder='title'
                                 value={document.title}
                                 name="title"
@@ -110,7 +110,7 @@ const ViewDoc = () => {
                                 onChange={handleChange}
                             ></input>
 
-                            <button className=" font-semibold  text-purple-700 text-sm flex border border-purple-300 w-1/2 rounded-md px-2 py-1 justify-center "
+                            <button className=" font-semibold  text-purple-700 text-sm flex border border-purple-300 w-1/2 rounded-md px-2 py-1 justify-center lg:w-auto lg:p-2 hover:bg-purple-100"
                                 type="button"
                                 onClick={getSummary}>
                                 <WiStars className="text-xl" />{isLoading ? "Summarizing..." : "AI Summarize"}</button>
@@ -118,7 +118,7 @@ const ViewDoc = () => {
                         </div>
 
                         {AISummary && (
-                            <div className="mt-3 p-3 border border-purple-200 bg-purple-50 rounded-md mb-3">
+                            <div className="mt-3 p-3 border border-purple-200 bg-purple-50 rounded-md mb-3 ">
                                 <p className="text-sm text-gray-700">
                                     <span className="font-semibold">Summary:</span> {AISummary}
                                 </p>
@@ -145,12 +145,12 @@ const ViewDoc = () => {
 
 
                         <div className='flex gap-x-2'>
-                            <button className="border  px-2  py-1 rounded-sm w-full border-gray-300 mt-1"
+                            <button className="border  px-2  py-1 rounded-sm w-full border-gray-300 mt-1 hover:bg-gray-100 hover:border hover:border-gray-600"
                                 type="button"
                                 onClick={() => navigate(`/workspaces/${workspaceId}/documents`)}
                             >Cancel</button>
 
-                            <button className="border  px-2  py-1 rounded-sm w-full border-gray-300 mt-1"
+                            <button className="border  px-2  py-1 rounded-sm w-full border-gray-300 mt-1 hover:bg-gray-950 hover:text-white duration-200 lg:p-2"
                                 type="submit"
                             >
                                 {submitting ? "Updating..." : "Save Changes"}
