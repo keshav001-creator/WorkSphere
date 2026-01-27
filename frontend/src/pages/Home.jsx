@@ -136,7 +136,7 @@ const Home = () => {
         err?.response?.data?.message || "Something went wrong"
       )
     }finally{
-      setSubmitError(false)
+      setSubmitting(false)
     }
   }
 
