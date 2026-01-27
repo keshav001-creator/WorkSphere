@@ -135,7 +135,7 @@ const Dashboard = () => {
     return () => {
       socket.off("workspaceAdded", fetchWorkspaces)
     }
-  }, [])
+  }, [user,loading])
 
   useEffect(() => {
     if (!loading && !user) {
