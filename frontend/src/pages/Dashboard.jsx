@@ -11,7 +11,7 @@ import { UserContext } from "../context/UserContext";
 
 const Dashboard = () => {
 
-  const { user, loading, fetchUser } = useContext(UserContext)
+  const { user, loading } = useContext(UserContext)
 
   const [deleteError, setDeleteError] = useState(null)
   const [error, setError] = useState(null)
@@ -26,6 +26,9 @@ const Dashboard = () => {
   const [showForm, setShowForm] = useState(false)
   const [deleteId, setDeleteId] = useState(null)
   const [showConfirm, setShowConfirm] = useState(false)
+
+   const [name, setName] = useState("")
+  const [description, setDescription] = useState("")
 
   const navigate = useNavigate()
 
@@ -50,9 +53,8 @@ const Dashboard = () => {
   }
 
 
-  const [name, setName] = useState("")
-  const [description, setDescription] = useState("")
-
+ 
+  console.log("user:", user)
 
 
   const handleSubmit = async (e) => {
@@ -112,6 +114,7 @@ const Dashboard = () => {
       setFetchError(null)
       setFetchLoading(true)
       const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces`, { withCredentials: true })
+      console.log(res)
       setWorkspaces(res.data.workspaces)
 
     } catch (err) {
@@ -125,7 +128,6 @@ const Dashboard = () => {
 
   useEffect(() => {
 
-    fetchUser()
     fetchWorkspaces()
 
     socket.on("workspaceAdded", fetchWorkspaces)
@@ -146,7 +148,7 @@ const Dashboard = () => {
 
     <div className=" px-5 py-5 w-full lg:px-10 lg:py-10 bg-gray-50">
 
-      {loading ? <p>Loading... </p>:
+     
       
       <div className={showForm || showConfirm ? "pointer-events-none select-none" : ""}>
         <div className=" py-5 lg:flex justify-between items-center">
@@ -251,7 +253,7 @@ const Dashboard = () => {
           </div>
         }
       </div>
-      }
+      
 
       {showConfirm && (
         <div className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm flex justify-center items-center">

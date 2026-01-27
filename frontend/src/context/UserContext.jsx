@@ -16,6 +16,7 @@ export const UserProvider = ({ children }) => {
         try {
             setLoading(true)
             const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/getUser`, { withCredentials: true })
+            console.log("res user:",res)
             setUser(res.data.user)
 
         } catch (err) {
@@ -36,7 +37,7 @@ export const UserProvider = ({ children }) => {
 
         try {
             const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/notifications`, { withCredentials: true })
-            // console.log("res",res.data.notifications)
+            console.log("res notifications:",res)
             setNotifications(res.data.notifications)
 
         } catch (err) {
@@ -71,7 +72,7 @@ export const UserProvider = ({ children }) => {
 
 
     return (
-        <UserContext.Provider value={{ user, setUser, loading, notifications, setNotifications,fetchUser }}>
+        <UserContext.Provider value={{ user, setUser, loading, notifications, setNotifications }}>
             {children}
         </UserContext.Provider>
     )

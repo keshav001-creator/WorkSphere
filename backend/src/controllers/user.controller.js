@@ -20,9 +20,6 @@ async function registerUser(req, res) {
 
         const avatar = `https://api.dicebear.com/7.x/initials/svg?seed=${firstName}+${lastName}`
 
-
-
-
         const hashedPass = await bcrypt.hash(password, 10)
 
         const User = await userModel.create({
