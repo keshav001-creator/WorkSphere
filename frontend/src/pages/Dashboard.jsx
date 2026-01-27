@@ -11,7 +11,7 @@ import { UserContext } from "../context/UserContext";
 
 const Dashboard = () => {
 
-  const { user, loading } = useContext(UserContext)
+  const { user, loading, fetchUser } = useContext(UserContext)
 
   const [deleteError, setDeleteError] = useState(null)
   const [error, setError] = useState(null)

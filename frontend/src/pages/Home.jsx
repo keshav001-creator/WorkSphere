@@ -18,7 +18,7 @@ const Home = () => {
 
   const navigate = useNavigate()
 
-  const { setUser, user, loading } = useContext(UserContext)
+  const { setUser, user, loading, fetchUser } = useContext(UserContext)
 
 
   const [firstName, setFirstName] = useState("")
@@ -127,7 +127,7 @@ const Home = () => {
       }, { withCredentials: true })
 
       setUser(res.data.User)
-
+      await fetchUser()
       navigate("/dashboard")
 
     } catch (err) {
@@ -135,7 +135,7 @@ const Home = () => {
       setSubmitError(
         err?.response?.data?.message || "Something went wrong"
       )
-    }finally{
+    } finally {
       setSubmitting(false)
     }
   }
@@ -144,10 +144,10 @@ const Home = () => {
     e.preventDefault()
 
     try {
-      
+
       setSubmitError(null)
       setSubmitting(true)
-      const res=await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/login`, {
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/login`, {
         email: Email,
         password: Password
       }, { withCredentials: true })
@@ -155,14 +155,14 @@ const Home = () => {
       console.log(res.data.User)
 
       setUser(res.data.User)
-
+      await fetchUser()
       navigate("/dashboard")
 
     } catch (err) {
       setSubmitError(
         err?.response?.data?.message || "Something went wrong"
       )
-    }finally{
+    } finally {
       setSubmitting(false)
     }
   }
@@ -247,7 +247,7 @@ const Home = () => {
         {/* features */}
 
         <section id="features"
-        className='px-4 py-10 lg:min-h-screen bg-gray-100 border-b border-gray-300 '>
+          className='px-4 py-10 lg:min-h-screen bg-gray-100 border-b border-gray-300 '>
 
           <h3 className='text-center font-bold text-xl  lg:text-4xl lg:font-semibold'>Everything your team needs</h3>
           <h3 className='text-center text-lg mb-5 lg:text-3xl text-gray-600 lg:hidden'>Features</h3>
@@ -271,7 +271,7 @@ const Home = () => {
 
 
             <div className="group p-4 bg-white border border-gray-300 lg:p-6 hover:shadow-lg transition">
-              
+
               <div className="relative z-10">
                 <RiRobot3Line className="text-5xl mb-21" />
                 <h4 className="font-semibold mt-2 lg:text-xl">AI-Powered Documents</h4>
@@ -498,7 +498,7 @@ const Home = () => {
             <button
               onClick={() => {
                 setShowLogin(false)
-             }}
+              }}
 
             >
               <RxCross2 className="absolute top-3 right-3 text-gray-600 hover:text-black lg:text-2xl" />
