@@ -125,6 +125,9 @@ const Dashboard = () => {
 
   useEffect(() => {
 
+    if (loading) return
+    if (!user) return
+
     fetchWorkspaces()
 
     socket.on("workspaceAdded", fetchWorkspaces)
@@ -135,15 +138,17 @@ const Dashboard = () => {
   }, [])
 
   useEffect(() => {
-  if (!loading && !user) {
-    navigate("/")
-  }
-}, [user, loading])
+    if (!loading && !user) {
+      navigate("/")
+    }
+  }, [user, loading])
 
   return (
 
     <div className=" px-5 py-5 w-full lg:px-10 lg:py-10 bg-gray-50">
 
+      {loading ? <p>Loading... </p>:
+      
       <div className={showForm || showConfirm ? "pointer-events-none select-none" : ""}>
         <div className=" py-5 lg:flex justify-between items-center">
           <div className="flex flex-col justify-between mb-5">
@@ -173,80 +178,81 @@ const Dashboard = () => {
             <p className="font-semibold text-lg">No Workspace yet</p>
             <p className="text-sm mt-1">Create Your first Workspace</p>
           </div>
-        ) : 
-        <div className="grid grid-cols-1 gap-4 mt-5 lg:grid lg:grid-cols-4">
+        ) :
+          <div className="grid grid-cols-1 gap-4 mt-5 lg:grid lg:grid-cols-4">
 
-          {workspaces.map(ws => (
+            {workspaces.map(ws => (
 
-            <div className="flex flex-col bg-white p-4 border border-gray-500 shadow-sm rounded-lg hover:border-2 hover:border-gray-700"
-              key={ws._id}
-              onClick={() => navigate(`/workspaces/${ws.workspaceId._id}`)}
-            >
-              <div className="border-b border-gray-200 flex lg:flex-1">
-                <div className="flex flex-row justify-between w-full ">
-                  <div className="">
-                    <h1 className="font-semibold lg:text-lg">{ws.workspaceId.name}</h1>
-                    <p className="mb-5 text-xs text-gray-600 lg:text-sm">{ws.workspaceId.description}</p>
+              <div className="flex flex-col bg-white p-4 border border-gray-500 shadow-sm rounded-lg hover:border-2 hover:border-gray-700"
+                key={ws._id}
+                onClick={() => navigate(`/workspaces/${ws.workspaceId._id}`)}
+              >
+                <div className="border-b border-gray-200 flex lg:flex-1">
+                  <div className="flex flex-row justify-between w-full ">
+                    <div className="">
+                      <h1 className="font-semibold lg:text-lg">{ws.workspaceId.name}</h1>
+                      <p className="mb-5 text-xs text-gray-600 lg:text-sm">{ws.workspaceId.description}</p>
+                    </div>
+
+                    <div className="text-sm relative">
+                      <CiMenuKebab onClick={(e) => {
+                        e.stopPropagation()
+                        setOpenMenuId(
+                          openMenuId === ws.workspaceId._id ? null : ws.workspaceId._id
+                        )
+                      }}
+
+                      />
+                      {openMenuId === ws.workspaceId._id && (
+
+                        <div className="absolute z-30  rounded-md border border-gray-300 bg-white shadow-lg right-2 flex flex-col text-xs top-3 font-semibold">
+
+                          <button className="px-3 py-2"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setDeleteId(ws.workspaceId._id)
+                              setShowConfirm(true)
+                              setDeleteError(null)
+                            }
+                            }
+                          >Delete</button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-center gap-x-10 mt-5">
+
+
+                  <div className="flex flex-col jutify-center items-center">
+                    <MdOutlineTask className="text-sm" />
+                    <p className="text-gray-500 text-xs mt-1 lg:font-semibold">Tasks</p>
                   </div>
 
-                  <div className="text-sm relative">
-                    <CiMenuKebab onClick={(e) => {
-                      e.stopPropagation()
-                      setOpenMenuId(
-                        openMenuId === ws.workspaceId._id ? null : ws.workspaceId._id
-                      )
-                    }}
-
-                    />
-                    {openMenuId === ws.workspaceId._id && (
-
-                      <div className="absolute z-30  rounded-md border border-gray-300 bg-white shadow-lg right-2 flex flex-col text-xs top-3 font-semibold">
-
-                        <button className="px-3 py-2"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setDeleteId(ws.workspaceId._id)
-                            setShowConfirm(true)
-                            setDeleteError(null)
-                          }
-                          }
-                        >Delete</button>
-                      </div>
-                    )}
+                  <div className="flex flex-col jutify-center items-center">
+                    <GrDocumentText className="text-sm" />
+                    <p className="text-gray-500 text-xs mt-1 lg:font-semibold">Docs</p>
                   </div>
-                </div>
-              </div>
 
-              <div className="flex items-center justify-center gap-x-10 mt-5">
+                  <div className="flex flex-col jutify-center items-center">
+                    <AiOutlineTeam className="text-sm" />
+                    <p className="text-gray-500 text-xs mt-1 lg:font-semibold">Members</p>
+                  </div>
 
-
-                <div className="flex flex-col jutify-center items-center">
-                  <MdOutlineTask className="text-sm" />
-                  <p className="text-gray-500 text-xs mt-1 lg:font-semibold">Tasks</p>
                 </div>
 
-                <div className="flex flex-col jutify-center items-center">
-                  <GrDocumentText className="text-sm" />
-                  <p className="text-gray-500 text-xs mt-1 lg:font-semibold">Docs</p>
-                </div>
-
-                <div className="flex flex-col jutify-center items-center">
-                  <AiOutlineTeam className="text-sm" />
-                  <p className="text-gray-500 text-xs mt-1 lg:font-semibold">Members</p>
+                <div className="text-xs text-gray-800 mt-5  ">
+                  {`Created- ${timeAgo(ws.createdAt)}`}
                 </div>
 
               </div>
 
-              <div className="text-xs text-gray-800 mt-5  ">
-                {`Created- ${timeAgo(ws.createdAt)}`}
-              </div>
-
-            </div>
-
-          ))}
-        </div>
+            ))}
+          </div>
         }
       </div>
+      }
 
       {showConfirm && (
         <div className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm flex justify-center items-center">
