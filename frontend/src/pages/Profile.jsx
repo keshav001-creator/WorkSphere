@@ -170,6 +170,10 @@ const Profile = () => {
               This action cannot be undone.
             </p>
 
+             {logoutError && (
+                <p className="text-red-600 text-center text-xs mt-2">{logoutError}</p>
+              )}
+
             <div className="flex justify-end gap-2 mt-4 w-full">
               <button
                 onClick={() => {
@@ -180,9 +184,6 @@ const Profile = () => {
                 Cancel
               </button>
 
-              {logoutError && (
-                <p className="text-red-600 text-center text-xs mt-2">{logoutError}</p>
-              )}
 
               <button
                 className="px-3 py-1 bg-red-700 text-white rounded-md w-1/2"

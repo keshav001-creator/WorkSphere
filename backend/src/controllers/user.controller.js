@@ -117,7 +117,7 @@ async function loginUser(req, res) {
 async function logoutUser(req, res) {
 
     try {
-        const { token } = req.cookies.token
+        const  token  = req.cookies.token
 
         if (token) {
             await Redis.set(`blacklist:${token}`, "true", "EX", 24 * 60 * 60)

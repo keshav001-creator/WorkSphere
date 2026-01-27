@@ -68,23 +68,6 @@ io.on("connection",(socket)=>{
         console.log(`user joined document`)
     })
 
-    socket.on("typing-start",({docId})=>{
-        socket.to(docId).emit("user-typing",{
-            userId,
-            name:socket.user.fullName.firstName
-        })
-    })
-
-
-    socket.on("typing-stop",({docId})=>{
-        socket.to(docId).emit("user-stop-typing",{
-            userId
-        })
-    })
-
-
-
-
     socket.on("disconnect",()=>{
         console.log("Socket disconnected:",userId)
     })
