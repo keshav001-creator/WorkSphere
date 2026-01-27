@@ -125,6 +125,7 @@ const Dashboard = () => {
 
   useEffect(() => {
 
+    fetchUser()
     fetchWorkspaces()
 
     socket.on("workspaceAdded", fetchWorkspaces)
