@@ -120,13 +120,10 @@ const Dashboard = () => {
 
     } finally {
       setFetchLoading(false)
-    }
-  }
+    } 
+ }
 
   useEffect(() => {
-
-    if (loading) return
-    if (!user) return
 
     fetchWorkspaces()
 
@@ -135,7 +132,8 @@ const Dashboard = () => {
     return () => {
       socket.off("workspaceAdded", fetchWorkspaces)
     }
-  }, [user,loading])
+  }, [])
+
 
   useEffect(() => {
     if (!loading && !user) {

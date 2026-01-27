@@ -127,7 +127,6 @@ const Home = () => {
       }, { withCredentials: true })
 
       setUser(res.data.User)
-      await fetchUser()
       navigate("/dashboard")
 
     } catch (err) {
@@ -155,7 +154,6 @@ const Home = () => {
       console.log(res.data.User)
 
       setUser(res.data.User)
-      await fetchUser()
       navigate("/dashboard")
 
     } catch (err) {
