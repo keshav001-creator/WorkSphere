@@ -36,7 +36,7 @@ async function registerUser(req, res) {
         const token = jwt.sign({
             id: User._id,
             email: User.email,
-          
+
         }, process.env.JWT_SECRET_KEY, { expiresIn: "1d" })
 
 
@@ -44,8 +44,8 @@ async function registerUser(req, res) {
             httpOnly: true,
             secure: true,
             sameSite: "none",
-            maxAge: 20 * 60 * 60 * 1000
-        })
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
 
         res.status(201).json({
             message: "User registered successfully",
@@ -87,7 +87,7 @@ async function loginUser(req, res) {
         const token = jwt.sign({
             id: User._id,
             email: User.email,
-           
+
         }, process.env.JWT_SECRET_KEY, { expiresIn: "1d" })
 
 
@@ -95,8 +95,8 @@ async function loginUser(req, res) {
             httpOnly: true,
             secure: true,
             sameSite: "none",
-            maxAge: 20 * 60 * 60 * 1000
-        })
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
 
         return res.status(200).json({
             message: "User logged in successfully",
@@ -114,7 +114,7 @@ async function loginUser(req, res) {
 async function logoutUser(req, res) {
 
     try {
-        const  token  = req.cookies.token
+        const token = req.cookies.token
 
         if (token) {
             await Redis.set(`blacklist:${token}`, "true", "EX", 24 * 60 * 60)
@@ -123,7 +123,7 @@ async function logoutUser(req, res) {
         res.clearCookie("token", {
             httpOnly: true,
             secure: true,
-            sameSite:"none"
+            sameSite: "none"
         })
 
         return res.status(200).json({ message: "logout successfully" })
@@ -140,13 +140,13 @@ async function logoutUser(req, res) {
 async function getme(req, res) {
 
     try {
-        const  token  = req.cookies.token
+        const token = req.cookies.token
 
         if (!token) {
             return res.status(400).json({ message: "Token does not exists", authenticated: false })
         }
 
-        const isBlacklisted =await Redis.get(`blacklist:${token}`)
+        const isBlacklisted = await Redis.get(`blacklist:${token}`)
 
         if (isBlacklisted) {
             return res.status(400).json({
@@ -174,64 +174,64 @@ async function getme(req, res) {
 }
 
 
-async function getUser(req,res){
+async function getUser(req, res) {
 
-    try{
+    try {
 
-        const user=req.user
+        const user = req.user
 
 
         return res.status(200).json({
-            message:"User data fetched successfully",
-            user:user
+            message: "User data fetched successfully",
+            user: user
         })
-        
 
-    }catch(err){
+
+    } catch (err) {
         return res.status(500).json({
-            message:"Error while fetching user data",
-            error:err.message
+            message: "Error while fetching user data",
+            error: err.message
         })
     }
 
 
 }
 
-async function updateUser(req,res){
+async function updateUser(req, res) {
 
-    try{
+    try {
 
-        const userId=req.user._id
+        const userId = req.user._id
 
-        const allowedUpdates={
-            "fullName.firstName":req.body.firstName,
-            "fullName.lastName":req.body.lastName,
-            "avatar":`https://api.dicebear.com/7.x/initials/svg?seed=${req.body.firstName}+${req.body.lastName}`
+        const allowedUpdates = {
+            "fullName.firstName": req.body.firstName,
+            "fullName.lastName": req.body.lastName,
+            "avatar": `https://api.dicebear.com/7.x/initials/svg?seed=${req.body.firstName}+${req.body.lastName}`
         }
 
 
-        const updatedUser=await userModel.findByIdAndUpdate({
-            _id:userId
-        },{$set:allowedUpdates}, {new:true})
+        const updatedUser = await userModel.findByIdAndUpdate({
+            _id: userId
+        }, { $set: allowedUpdates }, { new: true })
 
-        if(!updatedUser){   
-            return res.status(404).json({message:"User not found"})
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" })
         }
-        
+
 
         return res.status(200).json({
-            message:"User updated successfully",
+            message: "User updated successfully",
             updatedUser
         })
 
 
-    }catch(err){
+    } catch (err) {
         return res.status(500).json({
-            message:"Error while updating user info",
-            error:err.message
+            message: "Error while updating user info",
+            error: err.message
         })
     }
 
 }
 
-module.exports = { registerUser, loginUser, logoutUser, getme, getUser, updateUser}
+module.exports = { registerUser, loginUser, logoutUser, getme, getUser, updateUser }
