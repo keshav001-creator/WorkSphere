@@ -55,49 +55,49 @@ const Home = () => {
 
   // }, [])
 
-  const handleAuthSubmit = async (e) => {
-    e.preventDefault()
+  // const handleAuthSubmit = async (e) => {
+  //   e.preventDefault()
 
 
-    try {
-      setSubmitError(null)
-      setSubmitting(true)
-      let url = ""
-      let payload = {}
+  //   try {
+  //     setSubmitError(null)
+  //     setSubmitting(true)
+  //     let url = ""
+  //     let payload = {}
 
-      if (showRegister) {
-        url = "/api/register"
-        payload = {
-          fullName: { firstName, lastName },
-          email: Email,
-          password: Password
-        }
-      } else {
-        url = "/api/login"
-        payload = {
-          email: Email,
-          password: Password
-        }
-      }
+  //     if (showRegister) {
+  //       url = "/api/register"
+  //       payload = {
+  //         fullName: { firstName, lastName },
+  //         email: Email,
+  //         password: Password
+  //       }
+  //     } else {
+  //       url = "/api/login"
+  //       payload = {
+  //         email: Email,
+  //         password: Password
+  //       }
+  //     }
 
-      const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}${url}`,
-        payload,
-        { withCredentials: true }
-      )
+  //     const res = await axios.post(
+  //       `${import.meta.env.VITE_BACKEND_URL}${url}`,
+  //       payload,
+  //       { withCredentials: true }
+  //     )
 
-      setUser(res.data.User)
+  //     setUser(res.data.User)
 
-      navigate("/dashboard")
+  //     navigate("/dashboard")
 
-    } catch (err) {
-      setSubmitError(
-        err?.response?.data?.message || "Something went wrong"
-      )
-    } finally {
-      setSubmitting(false)
-    }
-  }
+  //   } catch (err) {
+  //     setSubmitError(
+  //       err?.response?.data?.message || "Something went wrong"
+  //     )
+  //   } finally {
+  //     setSubmitting(false)
+  //   }
+  // }
 
   useEffect(() => {
 
@@ -109,47 +109,61 @@ const Home = () => {
 
 
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault()
 
-  //   try {
+    try {
 
-  //     const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/register`, {
-  //       fullName: {
-  //         firstName,
-  //         lastName
-  //       },
-  //       email: Email,
-  //       password: Password
-  //     }, { withCredentials: true })
+      setSubmitError(null)
+      setSubmitting(true)
 
-  //     console.log(res)
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/register`, {
+        fullName: {
+          firstName,
+          lastName
+        },
+        email: Email,
+        password: Password
+      }, { withCredentials: true })
 
-  //     navigate("/dashboard")
+      setUser(res.data.User)
 
-  //   } catch (err) {
-  //     console.log("error:", err)
-  //   }
-  // }
+      navigate("/dashboard")
 
-  // const handleLoginSubmit = async (e) => {
-  //   e.preventDefault()
+    } catch (err) {
+      console.log("error:", err)
+      setSubmitError(
+        err?.response?.data?.message || "Something went wrong"
+      )
+    }
+  }
 
-  //   try {
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault()
 
-  //     const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/login`, {
-  //       email: Email,
-  //       password: Password
-  //     }, { withCredentials: true })
+    try {
+      
+      setSubmitError(null)
+      setSubmitting(true)
+      const res=await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/login`, {
+        email: Email,
+        password: Password
+      }, { withCredentials: true })
 
-  //     console.log(res)
+      console.log(res.data.User)
 
-  //     navigate("/dashboard")
+      setUser(res.data.User)
 
-  //   } catch (err) {
-  //     console.log("error:", err)
-  //   }
-  // }
+      navigate("/dashboard")
+
+    } catch (err) {
+      setSubmitError(
+        err?.response?.data?.message || "Something went wrong"
+      )
+    }finally{
+      setSubmitting(false)
+    }
+  }
 
   return (
     <div className='relative min-h-screen '>
@@ -404,7 +418,7 @@ const Home = () => {
 
             {/* REGISTER FORM */}
             <form className="flex flex-col gap-y-3"
-              onSubmit={handleAuthSubmit}>
+              onSubmit={handleSubmit}>
 
               <div className="mb-1 flex flex-col items-center">
                 <h1 className="text-2xl font-bold">Sign Up</h1>
@@ -482,8 +496,7 @@ const Home = () => {
             <button
               onClick={() => {
                 setShowLogin(false)
-                setSubmitError(null)
-              }}
+             }}
 
             >
               <RxCross2 className="absolute top-3 right-3 text-gray-600 hover:text-black lg:text-2xl" />
@@ -495,7 +508,7 @@ const Home = () => {
             </div>
 
             <form className="flex flex-col gap-y-3 flex-1"
-              onSubmit={handleAuthSubmit}>
+              onSubmit={handleLoginSubmit}>
 
               <input className="text-sm p-2 bg-white border border-gray-400 outline-0 rounded"
                 placeholder='Email'
