@@ -11,6 +11,6 @@ router.post("/logout",controller.logoutUser)
 router.get("/getUser",authUser,controller.getUser)
 router.patch("/update",authUser,controller.updateUser)
 
-router.get("/getme",controller.getme)
+// router.get("/getme",controller.getme)
 
 module.exports=router
