@@ -36,7 +36,9 @@ const Activity = () => {
     try {
       setLoading(true)
       setFetchError(null)
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/activityLog`, { withCredentials: true })
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/activityLog`, 
+        // { withCredentials: true }
+      )
       setLogs(res.data.logs)
       // console.log(res)
       

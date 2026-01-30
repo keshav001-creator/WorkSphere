@@ -67,7 +67,8 @@ const Dashboard = () => {
       const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/workspace`, {
         name,
         description,
-      }, { withCredentials: true }
+      }, 
+      // { withCredentials: true }
       )
 
       setName("")
@@ -89,7 +90,9 @@ const Dashboard = () => {
     try {
 
       setDeleting(true)
-      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}`, { withCredentials: true })
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}`, 
+        // { withCredentials: true }
+      )
 
       setWorkspaces(prev =>
         prev.filter(ws => ws.workspaceId._id !== workspaceId)
@@ -113,7 +116,9 @@ const Dashboard = () => {
 
       setFetchError(null)
       setFetchLoading(true)
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces`, { withCredentials: true })
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces`, 
+        // { withCredentials: true }
+      )
       console.log(res)
       setWorkspaces(res.data.workspaces)
 

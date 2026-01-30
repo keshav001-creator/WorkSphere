@@ -26,7 +26,10 @@ const ViewDoc = () => {
     const fetchDocument = async () => {
         try {
             setFetchError(null)
-            const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/documents/${docId}`, { withCredentials: true })
+            const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/documents/${docId}`, 
+                // { withCredentials: true }
+
+            )
             setDocument(res.data.document)
         } catch (err) {
             console.log(err)
@@ -60,7 +63,9 @@ const ViewDoc = () => {
             const res = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/documents/${docId}`, {
                 title: document.title,
                 content: document.content
-            }, { withCredentials: true })
+            }, 
+            // { withCredentials: true }
+        )
             console.log(res)
             navigate(`/workspaces/${workspaceId}/documents`)
 
@@ -79,7 +84,9 @@ const ViewDoc = () => {
 
         try {
             setSummaryError(null)
-            const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/documents/${docId}/summary`, { withCredentials: true })
+            const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/documents/${docId}/summary`, 
+                // { withCredentials: true }
+            )
             console.log(res)
             setAISummary(res.data.response)
 

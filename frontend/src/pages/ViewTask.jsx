@@ -71,7 +71,7 @@ const ViewTask = () => {
           status: task.status,
           assignToMember: task.assignToMember
         },
-        { withCredentials: true }
+        // { withCredentials: true }
       )
 
       navigate(`/workspaces/${workspaceId}/task`)

@@ -33,7 +33,9 @@ const Task = () => {
     try {
       setFetchError(null)
       setLoading(true)
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/tasks`, { withCredentials: true })
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/tasks`,
+        //  { withCredentials: true }
+        )
       console.log(res)
       setTasks(res.data.tasks)
     } catch (err) {
@@ -60,7 +62,9 @@ const Task = () => {
         status,
         assignToMember: assign,
         priority
-      }, { withCredentials: true })
+      }, 
+      // { withCredentials: true }
+    )
 
       setTasks(prev => [res.data.task, ...prev])
 
@@ -84,7 +88,9 @@ const Task = () => {
   const handleDelete = async (taskId) => {
 
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/task/${taskId}`, { withCredentials: true })
+      const res = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/task/${taskId}`, 
+        // { withCredentials: true }
+      )
       console.log(res)
 
       setTasks(prev => prev.filter(task => task._id !== taskId))

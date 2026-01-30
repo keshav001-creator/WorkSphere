@@ -57,7 +57,9 @@ const Profile = () => {
         firstName: form.firstName,
         lastName: form.lastName
 
-      }, { withCredentials: true })
+      }, 
+      // { withCredentials: true }
+    )
 
       setUser(res.data.updatedUser)
       navigate("/dashboard")
@@ -76,7 +78,9 @@ const Profile = () => {
     try {
       setLogoutError(null)
       setLogout(true)
-      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/logout`, {}, { withCredentials: true })
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/logout`, {}, 
+        // { withCredentials: true }
+      )
       setUser(null)
       navigate("/")
 

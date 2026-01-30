@@ -37,9 +37,12 @@ const Register = () => {
         },
         email: Email,
         password: Password
-      }, { withCredentials: true })
+      }, 
+      // { withCredentials: true }
+    )
 
       // console.log(res)
+      localStorage.setItem("token", res.data.token)
       setUser(res.data.User)
 
       navigate("/dashboard")

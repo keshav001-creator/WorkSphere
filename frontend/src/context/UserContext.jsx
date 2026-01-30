@@ -15,7 +15,9 @@ export const UserProvider = ({ children }) => {
 
         try {
             setLoading(true)
-            const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/getUser`, { withCredentials: true })
+            const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/getUser`, 
+                // { withCredentials: true }
+            )
             console.log("res user:",res)
             setUser(res.data.user)
 
@@ -36,7 +38,9 @@ export const UserProvider = ({ children }) => {
     const fetchNotifications = async () => {
 
         try {
-            const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/notifications`, { withCredentials: true })
+            const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/notifications`, 
+                // { withCredentials: true }
+            )
             console.log("res notifications:",res)
             setNotifications(res.data.notifications)
 

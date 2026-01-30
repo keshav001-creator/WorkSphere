@@ -124,8 +124,10 @@ const Home = () => {
         },
         email: Email,
         password: Password
-      }, { withCredentials: true })
-
+      },
+      //  { withCredentials: true }
+    )
+    localStorage.setItem("token", res.data.token)
       setUser(res.data.User)
       navigate("/dashboard")
 
@@ -149,8 +151,10 @@ const Home = () => {
       const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/login`, {
         email: Email,
         password: Password
-      }, { withCredentials: true })
-
+      }, 
+      // { withCredentials: true }
+    )
+localStorage.setItem("token", res.data.token)
       console.log(res.data.User)
 
       setUser(res.data.User)

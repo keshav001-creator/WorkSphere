@@ -51,7 +51,9 @@ const Team = () => {
     try {
       setLoading(true)
       setFetchError(null)
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/team`, { withCredentials: true })
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/team`, 
+        // { withCredentials: true }
+      )
 
       setTeam(res.data.teamMember)
     } catch (err) {
@@ -80,7 +82,9 @@ const Team = () => {
       const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/invite`, {
         email: Email,
         role
-      }, { withCredentials: true })
+      }, 
+      // { withCredentials: true }
+    )
       console.log(res)
       setEmail("")
       setRole("")

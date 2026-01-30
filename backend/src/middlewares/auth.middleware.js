@@ -6,16 +6,21 @@ async function authUser(req, res, next) {
 
     try {
 
-        const  token  = req.cookies.token
+        // const token = req.cookies.token
 
-        console.log(token)
+        // console.log(token)
 
+        const authHeader = req.headers.authorization;
+        // if (!token) {
+        //     return res.status(401).json({
+        //         message: "User unauthenticated"
+        //     })
+        // }
 
-        if (!token) {
-            return res.status(401).json({
-                message: "User unauthenticated"
-            })
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ message: "Unauthorized" });
         }
+
 
         const blacklisted = await Redis.get(`blacklist:${token}`)
         if (blacklisted) {

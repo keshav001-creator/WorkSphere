@@ -28,7 +28,9 @@ const Navbar = () => {
   const handleAccept = async (token) => {
     try {
 
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/invite/accept/${token}`, {}, { withCredentials: true })
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/invite/accept/${token}`, {}, 
+        // { withCredentials: true }
+      )
       console.log(res)
 
       setNotifications(prev =>

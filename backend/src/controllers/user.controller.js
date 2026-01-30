@@ -40,16 +40,17 @@ async function registerUser(req, res) {
         }, process.env.JWT_SECRET_KEY, { expiresIn: "1d" })
 
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
+        // res.cookie("token", token, {
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: "none",
+        //     maxAge: 7 * 24 * 60 * 60 * 1000
+        // });
 
         res.status(201).json({
             message: "User registered successfully",
-            User
+            User,
+            token
         })
 
     } catch (err) {
@@ -91,15 +92,16 @@ async function loginUser(req, res) {
         }, process.env.JWT_SECRET_KEY, { expiresIn: "1d" })
 
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
+        // res.cookie("token", token, {
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: "none",
+        //     maxAge: 7 * 24 * 60 * 60 * 1000
+        // });
 
         return res.status(200).json({
             message: "User logged in successfully",
+            token,
             User
         })
 
@@ -114,17 +116,22 @@ async function loginUser(req, res) {
 async function logoutUser(req, res) {
 
     try {
-        const token = req.cookies.token
+        const authHeader = req.headers.authorization;
+        if (!authHeader) {
+            return res.status(400).json({ message: "No token provided" });
+        }
+
+        const token = authHeader.split(" ")[1];
 
         if (token) {
             await Redis.set(`blacklist:${token}`, "true", "EX", 24 * 60 * 60)
         }
 
-        res.clearCookie("token", {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none"
-        })
+        // res.clearCookie("token", {
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: "none"
+        // })
 
         return res.status(200).json({ message: "logout successfully" })
 
@@ -137,41 +144,41 @@ async function logoutUser(req, res) {
     }
 }
 
-async function getme(req, res) {
+// async function getme(req, res) {
 
-    try {
-        const token = req.cookies.token
+//     try {
+//         const token = req.cookies.token
 
-        if (!token) {
-            return res.status(400).json({ message: "Token does not exists", authenticated: false })
-        }
+//         if (!token) {
+//             return res.status(400).json({ message: "Token does not exists", authenticated: false })
+//         }
 
-        const isBlacklisted = await Redis.get(`blacklist:${token}`)
+//         const isBlacklisted = await Redis.get(`blacklist:${token}`)
 
-        if (isBlacklisted) {
-            return res.status(400).json({
-                message: "token is blacklisted",
-                authenticated: false
-            })
-        }
+//         if (isBlacklisted) {
+//             return res.status(400).json({
+//                 message: "token is blacklisted",
+//                 authenticated: false
+//             })
+//         }
 
-        let decoded;
-        try {
-            decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-        } catch (err) {
-            return res.status(401).json({ authenticated: false, message: err.message });
-        }
+//         let decoded;
+//         try {
+//             decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+//         } catch (err) {
+//             return res.status(401).json({ authenticated: false, message: err.message });
+//         }
 
 
-        return res.status(200).json({ authenticated: true })
+//         return res.status(200).json({ authenticated: true })
 
-    } catch (err) {
-        return res.status(500).json({
-            message: "Error while verifying",
-            error: err.message
-        })
-    }
-}
+//     } catch (err) {
+//         return res.status(500).json({
+//             message: "Error while verifying",
+//             error: err.message
+//         })
+//     }
+// }
 
 
 async function getUser(req, res) {

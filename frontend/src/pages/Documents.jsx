@@ -49,7 +49,9 @@ const Documents = () => {
 
       setLoading(true)
       setFetchError(null)
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/documents`, { withCredentials: true })
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/documents`, 
+        // { withCredentials: true }
+      )
       setDocument(res.data.docs)
       // console.log(res.data.docs)
 
@@ -71,7 +73,7 @@ const Documents = () => {
     try {
       setDeleting(true)
       await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/documents/${deleteId}`,
-        { withCredentials: true }
+        // { withCredentials: true }
       )
 
       setDocument(prev => prev.filter(doc => doc._id !== deleteId))

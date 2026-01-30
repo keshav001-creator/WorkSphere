@@ -23,7 +23,9 @@ const CreateDocument = () => {
             const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/documents`, {
                 title,
                 content
-            }, { withCredentials: true })
+            }, 
+            // { withCredentials: true }
+        )
 
             console.log(res)
             navigate(`/workspaces/${workspaceId}/documents`)
