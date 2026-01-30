@@ -16,12 +16,12 @@ async function authUser(req, res, next) {
         //         message: "User unauthenticated"
         //     })
         // 
-            const token = authHeader.split(" ")[1];
-
+        
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res.status(401).json({ message: "Unauthorized" });
         }
-
+        
+        const token = authHeader.split(" ")[1];
 
         const blacklisted = await Redis.get(`blacklist:${token}`)
         if (blacklisted) {
