@@ -24,7 +24,9 @@ const ViewTask = () => {
     try {
 
       setFetchError(null)
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/task/${taskId}`, { withCredentials: true })
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/workspaces/${workspaceId}/task/${taskId}`, 
+        // { withCredentials: true }
+      )
       console.log("fetched", res.data.task)
 
       setTask({

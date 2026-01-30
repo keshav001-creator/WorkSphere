@@ -18,7 +18,7 @@ const Home = () => {
 
   const navigate = useNavigate()
 
-  const { setUser, user, loading, fetchUser } = useContext(UserContext)
+  const { setUser, user, loading } = useContext(UserContext)
 
 
   const [firstName, setFirstName] = useState("")
