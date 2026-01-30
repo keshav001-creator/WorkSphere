@@ -241,4 +241,4 @@ async function updateUser(req, res) {
 
 }
 
-module.exports = { registerUser, loginUser, logoutUser, getme, getUser, updateUser }
+module.exports = { registerUser, loginUser, logoutUser, getUser, updateUser }
