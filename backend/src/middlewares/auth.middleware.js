@@ -15,7 +15,8 @@ async function authUser(req, res, next) {
         //     return res.status(401).json({
         //         message: "User unauthenticated"
         //     })
-        // }
+        // 
+            const token = authHeader.split(" ")[1];
 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res.status(401).json({ message: "Unauthorized" });
