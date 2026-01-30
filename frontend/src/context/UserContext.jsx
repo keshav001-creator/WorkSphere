@@ -38,6 +38,7 @@ export const UserProvider = ({ children }) => {
     const fetchNotifications = async () => {
 
         try {
+            setLoading(true)
             const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/notifications`, 
                 // { withCredentials: true }
             )
@@ -46,6 +47,9 @@ export const UserProvider = ({ children }) => {
 
         } catch (err) {
             console.log(err)
+
+        }finally{
+            setLoading(false)
         }
     }
 

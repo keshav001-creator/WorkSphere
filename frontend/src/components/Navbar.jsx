@@ -14,7 +14,7 @@ const Navbar = () => {
 
   const navigate = useNavigate()
   const location = useLocation()
-  const { notifications, setNotifications } = useContext(UserContext)
+  const { notifications, setNotifications, loading } = useContext(UserContext)
   // console.log(notifications)
   const { user } = useContext(UserContext)
   const [showNotification, setShowNotification] = useState(false)
@@ -28,7 +28,7 @@ const Navbar = () => {
   const handleAccept = async (token) => {
     try {
 
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/invite/accept/${token}`, {}, 
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/invite/accept/${token}`, {},
         // { withCredentials: true }
       )
       console.log(res)
@@ -116,30 +116,31 @@ const Navbar = () => {
               </button>
             </div>
 
-            <div className="p-2 overflow-y-auto h-full">
-              {notifications.length ? (
-                notifications.map((n, i) => (
-                  <div
-                    key={i}
-                    className="p-3 mb-2 rounded-lg bg-blue-50 text-sm"
-                  >
-                    <p>{n.message}</p>
-                    <p
-                      className="font-semibold underline cursor-pointer"
-                      onClick={() => handleAccept(n.token)}
+            {loading ? "loading..." :
+              <div className="p-2 overflow-y-auto h-full">
+                {notifications.length ? (
+                  notifications.map((n, i) => (
+                    <div
+                      key={i}
+                      className="p-3 mb-2 rounded-lg bg-blue-50 text-sm"
                     >
-                      Click here to join
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {timeAgo(n.createdAt)}
-                    </p>
-                  </div>
-                ))
-              ) : (
-                <p className="text-sm text-gray-500">No notifications</p>
-              )}
-            </div>
-
+                      <p>{n.message}</p>
+                      <p
+                        className="font-semibold underline cursor-pointer"
+                        onClick={() => handleAccept(n.token)}
+                      >
+                        Click here to join
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {timeAgo(n.createdAt)}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500">No notifications</p>
+                )}
+              </div>
+            }
           </div>
         )}
 
@@ -154,6 +155,7 @@ const Navbar = () => {
                 <button onClick={() => setShowNotification(false)}><RxCross2 className="text-gray-500" /></button>
               </div>
 
+             {loading ? "loading..." : 
               <div className="p-2 overflow-y-auto">
 
                 {notifications?.length ?
@@ -181,6 +183,7 @@ const Navbar = () => {
                   )}
 
               </div>
+             }
 
             </div>
           </div>
